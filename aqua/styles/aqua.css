@@ -1,0 +1,17 @@
+.flowing-text {
+	color: rgba(255, 255, 255, 0.1);
+	background-image: url(../images/gradient.png);
+	background-repeat: repeat-x;
+	-webkit-background-clip: text;
+	animation: flowing-animation 15s linear infinite;
+}
+
+@keyframes flowing-animation {
+	0% {
+		background-position: left 0px top 0px;
+	}
+
+	100% {
+		background-position: left 1563px top 0px;
+	}
+}
