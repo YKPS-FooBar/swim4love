@@ -1,11 +1,9 @@
-import sys
-from functools import wraps
+from pathlib import Path
 
-from flask import Response, request, send_from_directory, render_template, jsonify, redirect, url_for, make_response
-from flask_login import login_user, logout_user, login_required, current_user
+from flask import request, render_template, jsonify, send_from_directory
 
-from swim4love import app#, db, login_manager
-# from homer.models import *
+from swim4love import app, db, socketio
+from swim4love.models import *
 from swim4love.helper import *
 from swim4love.site_config import *
 
@@ -13,9 +11,13 @@ from swim4love.site_config import *
 
 ##################### AJAX APIs #####################
 
-@app.route('/')
-def index_page():
-    return 'hello!'
+@app.route('/avatar/<swimmer_id>')
+def get_swimmer_avatar(swimmer_id):
+    avatar_file = '{}.jpg'.format(swimmer_id)
+    if Path('{}/{}/{}'.format(ROOT_DIR, AVATAR_DIR, avatar_file)).is_file():
+        return send_from_directory(AVATAR_DIR, avatar_file)
+    else:
+        return send_from_directory(AVATAR_DIR, DEFAULT_AVATAR)
 
 
 
@@ -44,10 +46,10 @@ def volunteer_page():
 
 
 @app.route('/achievement/<swimmer_id>')
-def achievement_page():
+def achievement_page(swimmer_id):
     return swimmer_id
 
 
 @app.route('/certificate/<swimmer_id>')
-def certificate_page():
+def certificate_page(swimmer_id):
     return swimmer_id

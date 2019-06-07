@@ -1,4 +1,4 @@
-from swim4love import app
+from swim4love import app, socketio
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)
