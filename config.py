@@ -5,6 +5,7 @@ class Config:
     '''Common configurations.'''
 
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///swim4love.db'
     THREADS_PER_PAGE = 2
     CSRF_ENABLED = True
     CORS_HEADERS = 'Content-Type'
