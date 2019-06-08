@@ -1,12 +1,59 @@
+<!DOCTYPE html>
 <html>
-	<head>
-		<title>Leaderboard</title>
-		<link rel='stylesheet' href='styles/leaderboard.css'>
-		<link rel='stylesheet' href='aqua/styles/aqua.css'>
-	</head>
-	<body>
-		<div class="container-base">
-			<h1 style="text-align: center; font-size: 50px; background-color: #FFF;" class="flowing-text">Leaderboard</h1>
-		</div>
-	</body>
+<head>
+  <meta charset='utf-8'>
+  <link rel='icon' href='assets/favicon.ico' type='image/x-icon' />
+  <script type='text/javascript' src='/static/libraries/jquery.min.js'></script>
+  <script type='text/javascript' src='/static/libraries/socket.io.js'></script>
+  <script type='text/javascript' src='/static/scripts/config.js'></script>
+  <script type='text/javascript' src='/static/scripts/swim4love.js'></script>
+  <script type='text/javascript' src='/static/scripts/leaderboard.js'></script>
+  <link rel='stylesheet' href='/static/styles/main.css'>
+  <link rel='stylesheet' href='/static/styles/leaderboard.css'>
+  <title>Leaderboard | Swim For Love</title>
+</head>
+
+<body>
+  <div class='container-main'>
+    <!-- Header -->
+    <div class='container-header'>
+      <h1 class='title'>2018<br />Swim For Love</h1>
+      <div class='sep'></div>
+      <h2 class='page flowing-text'>Leaderboard</h2>
+    </div>
+    <!-- Leaderboard -->
+    <div class='container-leader'>
+      <div class='leader-title'>
+        <span class='abs bold'><!--Rank--></span>
+        <span class='abs bold'>Name</span>
+        <span class='abs bold'>Laps</span>
+        <span class='abs bold'>Distance</span>
+      </div>
+      <div class='rank-title abs'>
+        <span>🥇</span><br />
+        <span>🥈</span><br />
+        <span>🥉</span><br />
+        <span>4</span><br />
+        <span>5</span><br />
+        <span>6</span><br />
+        <span>7</span><br />
+        <span>8</span><br />
+        <span>9</span><br />
+        <span>10</span><br />
+      </div>
+      <div class='leaderboard'></div>
+    </div>
+    <div class='container-tally'>
+      <!-- Tallies -->
+      <div class='tally-laps'>
+        <span class='tally laps title'>Total Laps</span>
+        <span class='tally laps num'>0</span>
+      </div>
+      <div class='tally-meters'>
+        <span class='tally meters title'>Total Distance</span>
+        <span class='tally meters num'>0</span>
+      </div>
+    </div>
+  </div>
+</body>
 </html>

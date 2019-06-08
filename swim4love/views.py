@@ -37,7 +37,7 @@ def socketio_new_connection():
 
 @app.route('/leaderboard')
 def leaderboard_page():
-    return 'Leaderboard'
+    return render_template('leaderboard.html')
 
 
 @app.route('/volunteer')
