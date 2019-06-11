@@ -11,7 +11,7 @@ from swim4love.site_config import *
 
 ##################### AJAX APIs #####################
 
-@app.route('/avatar/<swimmer_id>')
+@app.route('/swimmer/avatar/<swimmer_id>')
 def get_swimmer_avatar(swimmer_id):
     avatar_file = '{}.jpg'.format(swimmer_id)
     if Path('{}/{}/{}'.format(ROOT_DIR, AVATAR_DIR, avatar_file)).is_file():
@@ -19,6 +19,40 @@ def get_swimmer_avatar(swimmer_id):
     else:
         return send_from_directory(AVATAR_DIR, DEFAULT_AVATAR)
 
+
+@app.route('/swimmer/add', methods=['POST'])
+def add_new_swimmer():
+    swimmer_id = request.form.get('id')
+    swimmer_name = request.form.get('name')
+    swimmer_avatar = request.files.get('avatar')
+
+    code = 0
+    msg = 'Success'
+
+    # Validate form data
+    if not all((swimmer_id, swimmer_name)):
+        code = 1
+        msg = 'Missing parameters'
+    elif not (len(swimmer_id) == SWIMMER_ID_LENGTH and swimmer_id.isdigit()):
+        code = 1
+        msg = 'Invalid swimmer ID'
+    # swimmer_id should not be replaced with int(swimmer_id)
+    # because it is used later when saving the avatar
+    elif Swimmer.query.get(int(swimmer_id)):
+        code = 2
+        msg = 'Swimmer ID already exists'
+    
+    if code == 0:
+        # Add swimmer into database
+        swimmer = Swimmer(id=int(swimmer_id), name=swimmer_name, laps=0)
+        db.session.add(swimmer)
+        db.session.commit()
+
+        # Save swimmer avatar file
+        if swimmer_avatar:
+            swimmer_avatar.save('{}/{}/{}.jpg'.format(ROOT_DIR, AVATAR_DIR, swimmer_id))
+
+    return jsonify({'code': code, 'msg': msg})
 
 
 ##################### SocketIO #####################
