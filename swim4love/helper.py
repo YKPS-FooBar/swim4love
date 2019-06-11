@@ -4,6 +4,8 @@ from functools import wraps
 
 from flask import jsonify
 
+from swim4love.site_config import *
+
 
 def return_error_json(func):
     '''
@@ -23,3 +25,10 @@ def return_error_json(func):
                            'lineno': traceback.extract_tb(exc_tb)[1].linen
                            })
     return wrapper
+
+
+def is_valid_id(swimmer_id):
+    '''
+    Checks if a given swimmer ID is valid.
+    '''
+    return len(swimmer_id) == SWIMMER_ID_LENGTH and swimmer_id.isdigit()

@@ -23,7 +23,7 @@ def get_swimmer_avatar(swimmer_id):
 @app.route('/swimmer/info/<swimmer_id>')
 def get_swimmer_info(swimmer_id):
     # Validate data
-    if not (len(swimmer_id) == SWIMMER_ID_LENGTH and swimmer_id.isdigit()):
+    if not is_valid_id(swimmer_id):
         return jsonify({'code': 1, 'msg': 'Missing or invalid parameters'})
     
     # Fetch swimmer information
@@ -40,7 +40,7 @@ def swimmer_add_lap():
     msg = 'Success'
 
     # Validate form data
-    if not (len(swimmer_id) == SWIMMER_ID_LENGTH and swimmer_id.isdigit()):
+    if not is_valid_id(swimmer_id):
         code = 1
         msg = 'Invalid swimmer ID'
 
@@ -70,7 +70,7 @@ def add_new_swimmer():
     if not all((swimmer_id, swimmer_name)):
         code = 1
         msg = 'Missing parameters'
-    elif not (len(swimmer_id) == SWIMMER_ID_LENGTH and swimmer_id.isdigit()):
+    elif not is_valid_id(swimmer_id):
         code = 1
         msg = 'Invalid swimmer ID'
     # swimmer_id should not be replaced with int(swimmer_id)
