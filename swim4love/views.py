@@ -32,6 +32,31 @@ def get_swimmer_info(swimmer_id):
     return jsonify({'code': 0, 'msg': 'Success', 'data': data})
 
 
+@app.route('/swimmer/add-lap', methods=['POST'])
+def swimmer_add_lap():
+    swimmer_id = request.form.get('id')
+
+    code = 0
+    msg = 'Success'
+
+    # Validate form data
+    if not (len(swimmer_id) == SWIMMER_ID_LENGTH and swimmer_id.isdigit()):
+        code = 1
+        msg = 'Invalid swimmer ID'
+
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    if not swimmer:
+        code = 3
+        msg = 'Swimmer does not exist'
+    
+    if code == 0:
+        # Increment swimmer lap count
+        swimmer.laps += 1
+        db.session.commit()
+
+    return jsonify({'code': code, 'msg': msg})
+
+
 @app.route('/swimmer/add', methods=['POST'])
 def add_new_swimmer():
     swimmer_id = request.form.get('id')
