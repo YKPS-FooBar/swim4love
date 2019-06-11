@@ -20,6 +20,18 @@ def get_swimmer_avatar(swimmer_id):
         return send_from_directory(AVATAR_DIR, DEFAULT_AVATAR)
 
 
+@app.route('/swimmer/info/<swimmer_id>')
+def get_swimmer_info(swimmer_id):
+    # Validate data
+    if not (len(swimmer_id) == SWIMMER_ID_LENGTH and swimmer_id.isdigit()):
+        return jsonify({'code': 1, 'msg': 'Missing or invalid parameters'})
+    
+    # Fetch swimmer information
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    data = {'id': swimmer.id, 'name': swimmer.name, 'laps': swimmer.laps}
+    return jsonify({'code': 0, 'msg': 'Success', 'data': data})
+
+
 @app.route('/swimmer/add', methods=['POST'])
 def add_new_swimmer():
     swimmer_id = request.form.get('id')
