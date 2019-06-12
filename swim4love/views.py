@@ -54,6 +54,7 @@ def swimmer_add_lap():
         swimmer.laps += 1
         db.session.commit()
 
+    # TODO, don't return 200 if code != 0
     return jsonify({'code': code, 'msg': msg})
 
 
@@ -89,6 +90,7 @@ def add_new_swimmer():
         if swimmer_avatar:
             swimmer_avatar.save('{}/{}/{}.jpg'.format(ROOT_DIR, AVATAR_DIR, swimmer_id))
 
+    # TODO, don't return 200 if code != 0
     return jsonify({'code': code, 'msg': msg})
 
 
@@ -113,8 +115,7 @@ def leaderboard_page():
 
 @app.route('/volunteer')
 def volunteer_page():
-    raise NotImplementedError
-    return 'Volunteer'
+    return render_template('volunteer.html')
 
 
 @app.route('/achievement/<swimmer_id>')

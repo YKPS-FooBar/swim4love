@@ -1,0 +1,10 @@
+#scanner > video, #scanner > canvas {
+    width: 100%;
+    max-width: 100%;
+}
+/* to make the canvas overlap the video */
+#scanner > canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
