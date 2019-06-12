@@ -1,6 +1,8 @@
 name: swim4love
 channels:
   - defaults
+  - anaconda
+  - conda-forge
 dependencies:
   - ca-certificates=2019.5.15=0
   - certifi=2019.3.9=py36_0
@@ -36,7 +38,8 @@ dependencies:
     - dnspython==1.16.0
     - eventlet==0.25.0
     - flask-caching==1.7.2
+    - flask-sslify==0.1.5
     - greenlet==0.4.15
     - monotonic==1.5
-prefix: /Users/george/anaconda3/envs/swim4love
+prefix: /anaconda3/envs/swim4love
 
