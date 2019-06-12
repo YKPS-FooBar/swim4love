@@ -17,12 +17,15 @@ def return_error_json(func):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            _, __, exc_tb = sys.exc_info()
+            _, _, exc_tb = sys.exc_info()
             # Return the line number of the immediate cause, not the root cause
+            tb = traceback.extract_tb(exc_tb)[-1]
+            error_msg = 'File "{}", line {}, in {}\n    {}\n'.format(*tb)
+            error_msg += '{}: {}'.format(e.__class__.__name__, str(e))
             return jsonify({
                            'code': -1,
-                           'error': '{}: {}'.format(e.__class__.__name__, e),
-                           'lineno': traceback.extract_tb(exc_tb)[1].linen
+                           'error': error_msg,
+                           'lineno': traceback.extract_tb(exc_tb)[-1].lineno
                            })
     return wrapper
 

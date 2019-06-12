@@ -3,8 +3,8 @@ from pathlib import Path
 from flask import request, render_template, jsonify, send_from_directory
 
 from swim4love import app, db, socketio
-from swim4love.models import *
-from swim4love.helper import *
+from swim4love.models import Swimmer
+from swim4love.helper import is_valid_id
 from swim4love.site_config import *
 
 
@@ -25,7 +25,7 @@ def get_swimmer_info(swimmer_id):
     # Validate data
     if not is_valid_id(swimmer_id):
         return jsonify({'code': 1, 'msg': 'Missing or invalid parameters'})
-    
+
     # Fetch swimmer information
     swimmer = Swimmer.query.get(int(swimmer_id))
     data = {'id': swimmer.id, 'name': swimmer.name, 'laps': swimmer.laps}
@@ -48,7 +48,7 @@ def swimmer_add_lap():
     if not swimmer:
         code = 3
         msg = 'Swimmer does not exist'
-    
+
     if code == 0:
         # Increment swimmer lap count
         swimmer.laps += 1
@@ -78,7 +78,7 @@ def add_new_swimmer():
     elif Swimmer.query.get(int(swimmer_id)):
         code = 2
         msg = 'Swimmer ID already exists'
-    
+
     if code == 0:
         # Add swimmer into database
         swimmer = Swimmer(id=int(swimmer_id), name=swimmer_name, laps=0)
@@ -113,14 +113,17 @@ def leaderboard_page():
 
 @app.route('/volunteer')
 def volunteer_page():
+    raise NotImplementedError
     return 'Volunteer'
 
 
 @app.route('/achievement/<swimmer_id>')
 def achievement_page(swimmer_id):
+    raise NotImplementedError
     return swimmer_id
 
 
 @app.route('/certificate/<swimmer_id>')
 def certificate_page(swimmer_id):
+    raise NotImplementedError
     return swimmer_id

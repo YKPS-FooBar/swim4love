@@ -11,7 +11,7 @@ class Swimmer(db.Model):
     laps = db.Column(db.Integer, nullable=False, default=0)
 
     def __repr__(self):
-        return '<Swimmer {}>'.format(self.name)
+        return '<Swimmer {!r}>'.format(self.name)
 
 
 db.create_all() # Create tables using the above configuration
