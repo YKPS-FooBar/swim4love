@@ -39,4 +39,4 @@ def is_valid_id(swimmer_id):
     # But, for simplicity and unambiguity, we'll use regular expressions.
     # Don't use `'\d'` for regular expressions!  It allows '੩'.
     # Use `'[0-9]'`.
-    return re.match(r'[0-9][0-9][0-9]', swimmer_id)
+    return re.match(rf'[0-9]{SWIMMER_ID_LENGTH}', swimmer_id)
