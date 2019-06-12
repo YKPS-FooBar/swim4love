@@ -40,7 +40,7 @@ def get_swimmer_info(swimmer_id):
     # Fetch swimmer information
     data = {'id': swimmer.id, 'name': swimmer.name, 'laps': swimmer.laps}
 
-    return jsonify({'code': 0, 'msg': 'Success', 'data': data}), 200
+    return jsonify({'code': 0, 'msg': 'Success', 'data': data})
 
 
 @app.route('/swimmer/add-lap', methods=['POST'])
@@ -58,7 +58,7 @@ def swimmer_add_lap():
     swimmer.laps += 1
     db.session.commit()
 
-    return jsonify({'code': 0, 'msg': 'Success'}), 200
+    return jsonify({'code': 0, 'msg': 'Success'})
 
 
 @app.route('/swimmer/add', methods=['POST'])
