@@ -34,6 +34,8 @@ var config = {
 };
 
 $(document).ready(() => {
+    $.ajaxSetup({cache: false});
+
     // init, see <https://github.com/serratus/quaggaJS#quaggainitconfig-callback>
     Quagga.init(config, error => {
         if (error) {
