@@ -1,6 +1,8 @@
 /* A large portion of this code is copied from <https://github.com/serratus/quaggaJS/blob/master/example/live_w_locator.js> */
 // to stop, use Quagga.stop()
 
+var isCameraOn = false;
+
 // config, for Quagga.init(config, callback)
 var config = {
     inputStream: {
@@ -15,7 +17,7 @@ var config = {
             facingMode: 'environment',
             aspectRatio: {min: 1, max: 2}
         },
-        target: document.querySelector('#scanner')
+        target: document.querySelector('div#scanner')
     },
     locator: {
         // Size of a barcode relative to screen
@@ -33,15 +35,14 @@ var config = {
     locate: true
 };
 
-$(document).ready(() => {
-    $.ajaxSetup({cache: false});
-
+function startCamera() {
+    isCameraOn = true;
+    $('div#scanner').show();
     // init, see <https://github.com/serratus/quaggaJS#quaggainitconfig-callback>
     Quagga.init(config, error => {
         if (error) {
             console.log(error);
         } else {
-            // TODO, actual init here
             // TODO, attach listeners
             // TODO, see if the camera is able to zoom or turn on torch: (check <https://serratus.github.io/quaggaJS/#tipsandtricks>)
             //   var track = Quagga.CameraAccess.getActiveTrack();
@@ -60,39 +61,61 @@ $(document).ready(() => {
         }
     });
 
-
     // In the following 2 functions, 'result' looks like <https://github.com/serratus/quaggaJS#the-result-object>.
-    // When the barcode is processed, draw a green box for possible barcodes / blue box for the definite barcode with a red segment
     Quagga.onProcessed(result => {
-        var drawingCtx = Quagga.canvas.ctx.overlay,
-            drawingCanvas = Quagga.canvas.dom.overlay;
-
-        drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute('width')), parseInt(drawingCanvas.getAttribute('height')));
-        if (result) {
-            if (result.boxes) {
-                result.boxes.filter(box => {
-                    return box !== result.box;
-                }).forEach(box => {
-                    Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: 'green', lineWidth: 2});
-                });
-            }
-
-            if (result.box) {
-                Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: 'blue', lineWidth: 2});
-            }
-
-            if (result.codeResult && result.codeResult.code) {
-                Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
-            }
-        }
+        process(result);
     });
-
 
     // When detected, log
     Quagga.onDetected(result => {
-        var code = result.codeResult.code;
-        console.log("Detected barcode: ", result, code);
-        $('#result').append(code);
-        $.post('/swimmer/add-lap', {id: code});
+        logCode(result.codeResult.code);
     });
+}
+
+function process(result) {
+    // // When the barcode is processed, draw a green box for possible barcodes / blue box for the definite barcode with a red segment
+    // var drawingCtx = Quagga.canvas.ctx.overlay;
+    // var drawingCanvas = Quagga.canvas.dom.overlay;
+    // drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute('width')), parseInt(drawingCanvas.getAttribute('height')));
+    // if (result) {
+    //     if (result.boxes) {
+    //         result.boxes.filter(box => {
+    //             return box !== result.box;
+    //         }).forEach(box => {
+    //             Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: 'green', lineWidth: 2});
+    //         });
+    //     }
+    //     if (result.box) {
+    //         Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: 'blue', lineWidth: 2});
+    //     }
+    //     if (result.codeResult && result.codeResult.code) {
+    //         Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
+    //     }
+    // }
+}
+
+function stopCamera() {
+    isCameraOn = false;
+    $('div#scanner').hide();
+    Quagga.stop();
+    // TODO, detach listeners
+}
+
+function logCode(code) {
+    if (!isCameraOn || !isValidId(code)) {
+        return;
+    }
+    console.log('Detected ID: ', code);
+    $.post('/swimmer/add-lap', {id: code});
+    stopCamera();
+    $('#result').append(`<li>${code}</li>`);
+}
+
+function isValidId(swimmerId) {
+    return /^[0-9][0-9][0-9]$/.test(id);
+}
+
+$(document).ready(() => {
+    $.ajaxSetup({cache: false});
+    $('#startCamera').click(startCamera);
 });

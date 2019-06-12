@@ -1,3 +1,4 @@
+import re
 import sys
 import traceback
 from functools import wraps
@@ -32,4 +33,10 @@ def is_valid_id(swimmer_id):
     '''
     Checks if a given swimmer ID is valid.
     '''
-    return len(swimmer_id) == SWIMMER_ID_LENGTH and swimmer_id.isdigit()
+    # Don't use `str.isdigit()`!  For example, try `'³'.isdigit()`.
+    # Don't use `str.isnumeric()`.  It allows even more characters, like '五'.
+    # Use `str.isdecimal()` in this case.
+    # But, for simplicity and unambiguity, we'll use regular expressions.
+    # Don't use `'\d'` for regular expressions!  It allows '੩'.
+    # Use `'[0-9]'`.
+    return re.match(r'[0-9][0-9][0-9]', swimmer_id)
