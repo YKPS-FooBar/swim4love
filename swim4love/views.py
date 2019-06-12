@@ -14,7 +14,13 @@ from swim4love.site_config import *
 
 @app.route('/swimmer/avatar/<swimmer_id>')
 def get_swimmer_avatar(swimmer_id):
-    # TODO, check if swimmer_id is valid and check if swimmer is in existing swimmers in the database
+    # Validation
+    if not is_valid_id(swimmer_id):
+        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'}), 400
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    if not swimmer:
+        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'}), 404
+
     avatar_file = '{}.jpg'.format(swimmer_id)
     if Path('{}/{}/{}'.format(ROOT_DIR, AVATAR_DIR, avatar_file)).is_file():
         return send_from_directory(AVATAR_DIR, avatar_file)
@@ -24,41 +30,35 @@ def get_swimmer_avatar(swimmer_id):
 
 @app.route('/swimmer/info/<swimmer_id>')
 def get_swimmer_info(swimmer_id):
-    # TODO, check if swimmer is in existing swimmers in the database
-    # Validate data
+    # Validation
     if not is_valid_id(swimmer_id):
-        return jsonify({'code': 1, 'msg': 'Missing or invalid parameters'})
+        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'}), 400
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    if not swimmer:
+        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'}), 404
 
     # Fetch swimmer information
-    swimmer = Swimmer.query.get(int(swimmer_id))
     data = {'id': swimmer.id, 'name': swimmer.name, 'laps': swimmer.laps}
-    return jsonify({'code': 0, 'msg': 'Success', 'data': data})
+
+    return jsonify({'code': 0, 'msg': 'Success', 'data': data}), 200
 
 
 @app.route('/swimmer/add-lap', methods=['POST'])
 def swimmer_add_lap():
     swimmer_id = request.form.get('id')
 
-    code = 0
-    msg = 'Success'
-
     # Validate form data
     if not is_valid_id(swimmer_id):
-        code = 1
-        msg = 'Invalid swimmer ID'
-
+        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'}), 400
     swimmer = Swimmer.query.get(int(swimmer_id))
     if not swimmer:
-        code = 3
-        msg = 'Swimmer does not exist'
+        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'}), 404
 
-    if code == 0:
-        # Increment swimmer lap count
-        swimmer.laps += 1
-        db.session.commit()
+    # Increment swimmer lap count
+    swimmer.laps += 1
+    db.session.commit()
 
-    # TODO, don't return 200 if code != 0
-    return jsonify({'code': code, 'msg': msg})
+    return jsonify({'code': 0, 'msg': 'Success'}), 200
 
 
 @app.route('/swimmer/add', methods=['POST'])
@@ -67,34 +67,26 @@ def add_new_swimmer():
     swimmer_name = request.form.get('name')
     swimmer_avatar = request.files.get('avatar')
 
-    code = 0
-    msg = 'Success'
-
     # Validate form data
-    if not all((swimmer_id, swimmer_name)):
-        code = 1
-        msg = 'Missing parameters'
-    elif not is_valid_id(swimmer_id):
-        code = 1
-        msg = 'Invalid swimmer ID'
+    if not swimmer_id or not swimmer_name:
+        return jsonify({'code': 1, 'msg': 'Missing parameters'}), 400
+    if not is_valid_id(swimmer_id):
+        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'}), 400
     # swimmer_id should not be replaced with int(swimmer_id)
     # because it is used later when saving the avatar
-    elif Swimmer.query.get(int(swimmer_id)):
-        code = 2
-        msg = 'Swimmer ID already exists'
+    if Swimmer.query.get(int(swimmer_id)):
+        return jsonify({'code': 2, 'msg': 'Swimmer ID already exists'}), 409
 
-    if code == 0:
-        # Add swimmer into database
-        swimmer = Swimmer(id=int(swimmer_id), name=swimmer_name, laps=0)
-        db.session.add(swimmer)
-        db.session.commit()
+    # Add swimmer into database
+    swimmer = Swimmer(id=int(swimmer_id), name=swimmer_name, laps=0)
+    db.session.add(swimmer)
+    db.session.commit()
 
-        # Save swimmer avatar file
-        if swimmer_avatar:
-            swimmer_avatar.save('{}/{}/{}.jpg'.format(ROOT_DIR, AVATAR_DIR, swimmer_id))
+    # Save swimmer avatar file
+    if swimmer_avatar:
+        swimmer_avatar.save('{}/{}/{}.jpg'.format(ROOT_DIR, AVATAR_DIR, swimmer_id))
 
-    # TODO, don't return 200 if code != 0
-    return jsonify({'code': code, 'msg': msg})
+    return jsonify({'code': 0, 'msg': 'Success'})
 
 
 ##################### SocketIO #####################
