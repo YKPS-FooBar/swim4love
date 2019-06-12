@@ -7,7 +7,11 @@ The code for last year's event can be found at [yu-george/swim4love](https://git
 The `local` directory is not a part of the Flask web application, but contains scripts to run locally on a computer.
 
 Run
-```
+```sh
 conda env create -f environment.yaml
 ```
-to create the environment.
+to create the environment, and
+```sh
+conda activate swim4love
+```
+to activate.
