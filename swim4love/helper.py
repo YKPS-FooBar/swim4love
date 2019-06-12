@@ -4,7 +4,7 @@ from functools import wraps
 
 from flask import jsonify
 
-from swim4love.site_config import *
+from swim4love.site_config import SWIMMER_ID_LENGTH
 
 
 def return_error_json(func):
