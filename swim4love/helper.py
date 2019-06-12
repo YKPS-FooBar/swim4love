@@ -22,11 +22,9 @@ def return_error_json(func):
             tb = traceback.extract_tb(exc_tb)[-1]
             error_msg = 'File "{}", line {}, in {}\n    {}\n'.format(*tb)
             error_msg += '{}: {}'.format(e.__class__.__name__, str(e))
-            return jsonify({
-                           'code': -1,
-                           'error': error_msg,
-                           'lineno': traceback.extract_tb(exc_tb)[-1].lineno
-                           })
+            return jsonify({'code': -1,
+                            'error': error_msg,
+                            'lineno': traceback.extract_tb(exc_tb)[-1].lineno})
     return wrapper
 
 
