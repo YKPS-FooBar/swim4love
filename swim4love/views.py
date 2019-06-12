@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from flask import request, render_template, jsonify, send_from_directory
+from flask_socketio import emit
 
 from swim4love import app, db, socketio
 from swim4love.models import Swimmer
@@ -13,6 +14,7 @@ from swim4love.site_config import *
 
 @app.route('/swimmer/avatar/<swimmer_id>')
 def get_swimmer_avatar(swimmer_id):
+    # TODO, check if swimmer_id is valid and check if swimmer is in existing swimmers in the database
     avatar_file = '{}.jpg'.format(swimmer_id)
     if Path('{}/{}/{}'.format(ROOT_DIR, AVATAR_DIR, avatar_file)).is_file():
         return send_from_directory(AVATAR_DIR, avatar_file)
@@ -22,6 +24,7 @@ def get_swimmer_avatar(swimmer_id):
 
 @app.route('/swimmer/info/<swimmer_id>')
 def get_swimmer_info(swimmer_id):
+    # TODO, check if swimmer is in existing swimmers in the database
     # Validate data
     if not is_valid_id(swimmer_id):
         return jsonify({'code': 1, 'msg': 'Missing or invalid parameters'})
