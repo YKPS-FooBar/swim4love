@@ -122,6 +122,7 @@ def socketio_new_connection():
 ##################### Web Pages #####################
 
 @app.route('/leaderboard')
+@app.route('/')
 def leaderboard_page():
     return render_template('leaderboard.html')
 
