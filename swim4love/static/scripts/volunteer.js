@@ -1,7 +1,8 @@
 /* A large portion of this code is copied from <https://github.com/serratus/quaggaJS/blob/master/example/live_w_locator.js> */
-// to stop, use Quagga.stop()
 
 var isCameraOn = false;
+
+// We will use the Cookie 'swimmers' to store a json-styled list of swimmers
 
 // config, for Quagga.init(config, callback)
 var config = {
@@ -17,7 +18,8 @@ var config = {
             facingMode: 'environment',
             aspectRatio: {min: 1, max: 2}
         },
-        target: document.querySelector('div#scanner')
+        // <div> to show video & canvas
+        target: document.querySelector('#barcode-scanner')
     },
     locator: {
         // Size of a barcode relative to screen
@@ -29,7 +31,7 @@ var config = {
     // Number of workers
     numOfWorkers: 4,
     // Number of scans per second
-    frequency: 10,
+    frequency: 5,
     decoder: {readers: ['code_128_reader']},
     // To locate the barcode on image
     locate: true
@@ -37,13 +39,12 @@ var config = {
 
 function startCamera() {
     isCameraOn = true;
-    $('div#scanner').show();
+    $('#barcode-scanner').show();
     // init, see <https://github.com/serratus/quaggaJS#quaggainitconfig-callback>
     Quagga.init(config, error => {
         if (error) {
             console.log(error);
         } else {
-            // TODO, attach listeners
             // TODO, see if the camera is able to zoom or turn on torch: (check <https://serratus.github.io/quaggaJS/#tipsandtricks>)
             //   var track = Quagga.CameraAccess.getActiveTrack();
             //   if (typeof track.getCapabilities === 'function') {
@@ -61,61 +62,75 @@ function startCamera() {
         }
     });
 
-    // In the following 2 functions, 'result' looks like <https://github.com/serratus/quaggaJS#the-result-object>.
-    Quagga.onProcessed(result => {
-        process(result);
-    });
+    // Quagga.onProcessed(result => {
+    //     process(result);
+    // });
 
-    // When detected, log
+    // 'result' looks like <https://github.com/serratus/quaggaJS#the-result-object>.
+    // When detected, stop camera and log
     Quagga.onDetected(result => {
-        logCode(result.codeResult.code);
+        if (!isCameraOn) {
+            console.log(`Detected swimmer #${id}, but the camera has already detected something else`)
+            return;
+        }
+        isCameraOn = false;
+        var id = result.codeResult.code;
+        if (isValidId(id)) {
+            Quagga.stop();
+            $('#barcode-scanner').hide();
+            addSwimmer(id);
+        } else {
+            isCameraOn = true;
+        }
     });
 }
 
-function process(result) {
-    // // When the barcode is processed, draw a green box for possible barcodes / blue box for the definite barcode with a red segment
-    // var drawingCtx = Quagga.canvas.ctx.overlay;
-    // var drawingCanvas = Quagga.canvas.dom.overlay;
-    // drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute('width')), parseInt(drawingCanvas.getAttribute('height')));
-    // if (result) {
-    //     if (result.boxes) {
-    //         result.boxes.filter(box => {
-    //             return box !== result.box;
-    //         }).forEach(box => {
-    //             Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: 'green', lineWidth: 2});
-    //         });
-    //     }
-    //     if (result.box) {
-    //         Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: 'blue', lineWidth: 2});
-    //     }
-    //     if (result.codeResult && result.codeResult.code) {
-    //         Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
-    //     }
-    // }
-}
-
-function stopCamera() {
-    isCameraOn = false;
-    $('div#scanner').hide();
-    Quagga.stop();
-    // TODO, detach listeners
-}
-
-function logCode(code) {
-    if (!isCameraOn || !isValidId(code)) {
+function addSwimmer(id) {
+    if (!isValidId(id)) {
+        // TODO, visual error message
+        alert(id + '格式不正确');
         return;
     }
-    console.log('Detected ID: ', code);
-    $.post('/swimmer/add-lap', {id: code});
-    stopCamera();
-    $('#result').append(`<li>${code}</li>`);
+    console.log(`Added swimmer #${id}`);
+    // TODO, add swimmer to cookies
+    Cookies.get('swimmers');
+    $('#swimmers-list').prepend(`<li>Swimmer #${id}</li>`);
+
+    updateSwimmersFromCookies();
+    hideAddSwimmerDiv();
 }
 
 function isValidId(swimmerId) {
-    return /^[0-9][0-9][0-9]$/.test(id);
+    return /^[0-9][0-9][0-9]$/.test(swimmerId);
+}
+
+function showAddSwimmerDiv() {
+    $('#add-swimmer').show();
+    $('#swimmers').hide();
+    $('#add-swimmer-input').focus();
+}
+
+function hideAddSwimmerDiv() {
+    $('#add-swimmer').hide();
+    $('#swimmers').show();
+    $('#add-swimmer-input').val('');
+}
+
+function updateSwimmersFromCookies() {
+    // TODO, update $('#swimmers-list') with <li>s of swimmers
 }
 
 $(document).ready(() => {
     $.ajaxSetup({cache: false});
-    $('#startCamera').click(startCamera);
+
+    $('#start-camera-button').click(startCamera);
+    $('#add-swimmer-input-button').click(() => {
+        addSwimmer($('#add-swimmer-input').val());
+        $('#add-swimmer-input').val('');
+        $('#add-swimmer-input').focus();
+    });
+    $('#show-add-swimmer').click(showAddSwimmerDiv);
+    $('#add-swimmer-back').click(hideAddSwimmerDiv);
+
+    updateSwimmersFromCookies();
 });

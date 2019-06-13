@@ -4,19 +4,29 @@
   <meta charset="utf-8" />
   <link rel='icon' href='assets/favicon.ico' type='image/x-icon' />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script type="text/javascript" src="/static/vendors/jquery-3.4.1.min.js" type="text/javascript"></script>
+  <script type="text/javascript" src="/static/vendors/jquery-3.4.1.min.js"></script>
   <!-- For media device support -->
-  <script type="text/javascript" src="/static/vendors/adapter-latest.js" type="text/javascript"></script>
+  <script type="text/javascript" src="/static/vendors/adapter.min.js"></script>
   <!-- For barcode recognition -->
-  <script type="text/javascript" src="/static/vendors/quagga.min.js" type="text/javascript"></script>
+  <script type="text/javascript" src="/static/vendors/quagga.min.js"></script>
+  <!-- For storing list of swimmers into cookies -->
+  <script type="text/javascript" src="/static/vendors/js.cookie.min.js"></script>
   <link rel='stylesheet' href='/static/styles/volunteer.css'>
-  <title>Volunteer | Swim For Love</title>
+  <title>志愿者 | Swim For Love</title>
 </head>
-
 <body>
-  <button id="startCamera">Scan</button>
-  <ul id="result"></ul>
-  <div id="scanner" style="display: none;"></div>
+  <div id="add-swimmer" style="display: none;">
+    <button id="add-swimmer-back">返回</button>
+    <br />
+    输入游泳者3位编号：<input id="add-swimmer-input" type="text" placeholder="例：123" /> <button id="add-swimmer-input-button">添加</button>
+    <br />
+    或：<button id="start-camera-button">扫描条形码</button>
+    <div id="barcode-scanner" style="display: none;"></div>
+  </div>
+  <div id="swimmers">
+    <button id="show-add-swimmer">添加游泳者</button>
+    <ul id="swimmers-list"></ul>
+  </div>
 </body>
 <script type='text/javascript' src='/static/scripts/volunteer.js'></script>
 </html>
