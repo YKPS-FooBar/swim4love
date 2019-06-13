@@ -7,7 +7,7 @@ The code for last year's event can be found at [yu-george/swim4love](https://git
 The `local` directory is not a part of the Flask web application, but contains scripts to run locally on a computer.
 
 ## Installation
-Make sure you have [*Conda*](https://www.anaconda.com/) installed.
+Make sure you have [Conda](https://github.com/conda/conda) installed.
 
 Run
 ```sh
