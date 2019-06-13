@@ -5,7 +5,7 @@ from flask_socketio import emit
 
 from swim4love import app, db, socketio
 from swim4love.models import Swimmer
-from swim4love.helper import is_valid_id
+from swim4love.helper import is_valid_id, get_error_json
 from swim4love.site_config import *
 
 
@@ -16,10 +16,10 @@ from swim4love.site_config import *
 def get_swimmer_avatar(swimmer_id):
     # Validation
     if not is_valid_id(swimmer_id):
-        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'})
+        return get_error_json(1)
     swimmer = Swimmer.query.get(int(swimmer_id))
     if not swimmer:
-        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'})
+        return get_error_json(3)
 
     avatar_file = '{}.jpg'.format(swimmer_id)
     if Path('{}/{}/{}'.format(ROOT_DIR, AVATAR_DIR, avatar_file)).is_file():
@@ -31,10 +31,10 @@ def get_swimmer_avatar(swimmer_id):
 def get_swimmer_info(swimmer_id):
     # Validation
     if not is_valid_id(swimmer_id):
-        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'})
+        return get_error_json(1)
     swimmer = Swimmer.query.get(int(swimmer_id))
     if not swimmer:
-        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'})
+        return get_error_json(3)
 
     # Fetch swimmer information
     data = {'id': swimmer.id, 'name': swimmer.name, 'laps': swimmer.laps}
@@ -48,10 +48,10 @@ def swimmer_add_lap():
 
     # Validate
     if not is_valid_id(swimmer_id):
-        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'})
+        return get_error_json(1)
     swimmer = Swimmer.query.get(int(swimmer_id))
     if not swimmer:
-        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'})
+        return get_error_json(3)
 
     # Increment swimmer lap count
     swimmer.laps += 1
@@ -66,10 +66,10 @@ def swimmer_sub_lap():
 
     # Validate form data
     if not is_valid_id(swimmer_id):
-        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'})
+        return get_error_json(1)
     swimmer = Swimmer.query.get(int(swimmer_id))
     if not swimmer:
-        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'})
+        return get_error_json(3)
 
     # Decrement swimmer lap count
     swimmer.laps -= 1
@@ -88,11 +88,11 @@ def add_new_swimmer():
     if not swimmer_id or not swimmer_name:
         return jsonify({'code': 1, 'msg': 'Missing parameters'})
     if not is_valid_id(swimmer_id):
-        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'})
+        return get_error_json(1)
     # swimmer_id should not be replaced with int(swimmer_id)
     # because it is used later when saving the avatar
     if Swimmer.query.get(int(swimmer_id)):
-        return jsonify({'code': 2, 'msg': 'Swimmer ID already exists'})
+        return get_error_json(2)
 
     # Add swimmer into database
     swimmer = Swimmer(id=int(swimmer_id), name=swimmer_name, laps=0)
@@ -110,6 +110,7 @@ def add_new_swimmer():
 
 @socketio.on('connect')
 def socketio_new_connection():
+	# By design pattern, this should be at debug level.
     app.logger.info('New leaderboard connection')
     try:
         emit('init', swimmers_data, json=True)

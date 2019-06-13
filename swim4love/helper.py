@@ -8,6 +8,12 @@ from flask import jsonify
 from swim4love.site_config import SWIMMER_ID_LENGTH
 
 
+ERRORS = {
+    1: 'Invalid swimmer ID',
+    2: 'Swimmer ID already exists',
+    3: 'Swimmer does not exist',
+}
+
 def return_error_json(func):
     '''
     Catch any exception not handled and return
@@ -40,3 +46,11 @@ def is_valid_id(swimmer_id):
     # Don't use `'\d'` for regular expressions!  It allows '੩'.
     # Use `'[0-9]'`.
     return re.match(r'[0-9]' * SWIMMER_ID_LENGTH, swimmer_id)
+
+
+def get_error_json(error_code: int):
+    '''
+    Returns the jsonified version of an error based on the error_code.
+    '''
+    msg = ERRORS.get(error_code, 'Unknown error')
+    return jsonify({'code': error_code, 'msg': msg})
