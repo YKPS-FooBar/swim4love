@@ -8,93 +8,93 @@ if (!Cookies.get('swimmers')) {
 
 var idsToNames = {};
 
-var isCameraOn = false;
+// var isCameraOn = false;
 
-// config, for Quagga.init(config, callback)
-var config = {
-    inputStream: {
-        name: 'Live',
-        type: 'LiveStream',
-        // Constraints for the video camera, pretty self explanatory
-        // Check <https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Parameters>
-        // for possible values
-        constraints: {
-            width: {min: 640},
-            height: {min: 480},
-            facingMode: 'environment',
-            aspectRatio: {min: 1, max: 2}
-        },
-        // <div> to show video & canvas
-        target: document.querySelector('#barcode-scanner')
-    },
-    locator: {
-        // Size of a barcode relative to screen
-        // Reckon that medium is about right
-        patchSize: 'medium',
-        // Subsampling picture to half of resolution
-        halfSample: true
-    },
-    // Number of workers, can be set to / analogous to number of cores of CPU
-    numOfWorkers: 4,
-    // Maximum number of scans per second
-    frequency: 5,
-    decoder: {readers: ['code_128_reader']},
-    // To locate the barcode on image
-    locate: true
-};
+// // config, for Quagga.init(config, callback)
+// var config = {
+//     inputStream: {
+//         name: 'Live',
+//         type: 'LiveStream',
+//         // Constraints for the video camera, pretty self explanatory
+//         // Check <https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Parameters>
+//         // for possible values
+//         constraints: {
+//             width: {min: 640},
+//             height: {min: 480},
+//             facingMode: 'environment',
+//             aspectRatio: {min: 1, max: 2}
+//         },
+//         // <div> to show video & canvas
+//         target: document.querySelector('#barcode-scanner')
+//     },
+//     locator: {
+//         // Size of a barcode relative to screen
+//         // Reckon that medium is about right
+//         patchSize: 'medium',
+//         // Subsampling picture to half of resolution
+//         halfSample: true
+//     },
+//     // Number of workers, can be set to / analogous to number of cores of CPU
+//     numOfWorkers: 4,
+//     // Maximum number of scans per second
+//     frequency: 5,
+//     decoder: {readers: ['code_128_reader']},
+//     // To locate the barcode on image
+//     locate: true
+// };
 
-function startCamera() {
-    isCameraOn = true;
-    $('#barcode-scanner').show();
-    // init, see <https://github.com/serratus/quaggaJS#quaggainitconfig-callback>
-    Quagga.init(config, error => {
-        if (error) {
-            console.log(error);
-        } else {
-            // TODO, see if the camera is able to zoom or turn on torch: (check <https://serratus.github.io/quaggaJS/#tipsandtricks>)
-            //   var track = Quagga.CameraAccess.getActiveTrack();
-            //   if (typeof track.getCapabilities === 'function') {
-            //       var capabilities = track.getCapabilities();
-            //   } else {
-            //       var capabilities = {};
-            //   }
-            // capabilities.torch would be true if torch is available
-            // capabilities.zoom would require you to check the documentation
-            // to zoom, track.applyConstraints({advanced: [{zoom: parseFloat(value)}]});
-            // to torch, track.applyConstraints({advanced: [{torch: !!value}]});
-            // TODO, allow user to choose video device from Quagga.enumerateVideoDevices().then(devices => {do something with device names; check documentation})
-            //       (label for default device is Quagga.CameraAccess.getActiveStreamLabel())
-            Quagga.start()
-        }
-    });
+// function startCamera() {
+//     isCameraOn = true;
+//     $('#barcode-scanner').show();
+//     // init, see <https://github.com/serratus/quaggaJS#quaggainitconfig-callback>
+//     Quagga.init(config, error => {
+//         if (error) {
+//             console.log(error);
+//         } else {
+//             // TODO, see if the camera is able to zoom or turn on torch: (check <https://serratus.github.io/quaggaJS/#tipsandtricks>)
+//             //   var track = Quagga.CameraAccess.getActiveTrack();
+//             //   if (typeof track.getCapabilities === 'function') {
+//             //       var capabilities = track.getCapabilities();
+//             //   } else {
+//             //       var capabilities = {};
+//             //   }
+//             // capabilities.torch would be true if torch is available
+//             // capabilities.zoom would require you to check the documentation
+//             // to zoom, track.applyConstraints({advanced: [{zoom: parseFloat(value)}]});
+//             // to torch, track.applyConstraints({advanced: [{torch: !!value}]});
+//             // TODO, allow user to choose video device from Quagga.enumerateVideoDevices().then(devices => {do something with device names; check documentation})
+//             //       (label for default device is Quagga.CameraAccess.getActiveStreamLabel())
+//             Quagga.start()
+//         }
+//     });
 
-    // 'result' looks like <https://github.com/serratus/quaggaJS#the-result-object>.
-    // When detected, stop camera and log
-    Quagga.onDetected(result => {
-        if (!isCameraOn) {
-            console.log(`Detected swimmer #${id}, but the camera has already detected something else`)
-            return;
-        }
-        // We set it to false beforehand to prevent
-        // multiple onDetected called in a very short interval
-        // and since updateNameFromServer takes time
-        isCameraOn = false;
-        var id = result.codeResult.code.toString();
-        updateNameFromServer(id).done(result => {
-            if (result.code === 0) {
-                // The scanned swimmer is on the list of swimmers on the server
-                Quagga.stop();
-                $('#barcode-scanner').hide();
-                addSwimmer(id);
-            } else {
-                // Something was scanned from the webcam that is not on the swimmers list on the server
-                // TODO, visual error message
-                alert(`游泳者#${id}没有登记`)
-                isCameraOn = true;
-            }
-        });
-    });
-}
+//     // 'result' looks like <https://github.com/serratus/quaggaJS#the-result-object>.
+//     // When detected, stop camera and log
+//     Quagga.onDetected(result => {
+//         if (!isCameraOn) {
+//             console.log(`Detected swimmer #${id}, but the camera has already detected something else`)
+//             return;
+//         }
+//         // We set it to false beforehand to prevent
+//         // multiple onDetected called in a very short interval
+//         // and since updateNameFromServer takes time
+//         isCameraOn = false;
+//         var id = result.codeResult.code.toString();
+//         updateNameFromServer(id).done(result => {
+//             if (result.code === 0) {
+//                 // The scanned swimmer is on the list of swimmers on the server
+//                 Quagga.stop();
+//                 $('#barcode-scanner').hide();
+//                 addSwimmer(id);
+//             } else {
+//                 // Something was scanned from the webcam that is not on the swimmers list on the server
+//                 // TODO, visual error message
+//                 alert(`游泳者#${id}没有登记`)
+//                 isCameraOn = true;
+//             }
+//         });
+//     });
+// }
 
 function addSwimmer(id) {
     // This function temporarily allows IDs that are not on server,
@@ -132,16 +132,16 @@ function isValidId(id) {
 }
 
 function showAddSwimmerDiv() {
-    startCamera();
+    // startCamera();
     $('#add-swimmer').show();
     $('#swimmers').hide();
     $('#add-swimmer-input').focus();
 }
 
 function hideAddSwimmerDiv() {
-    isCameraOn = false;
-    Quagga.stop();
-    $('#barcode-scanner').hide();
+    // isCameraOn = false;
+    // Quagga.stop();
+    // $('#barcode-scanner').hide();
     $('#add-swimmer').hide();
     $('#swimmers').show();
     $('#add-swimmer-input').val('');
