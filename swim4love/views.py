@@ -31,7 +31,6 @@ def get_swimmer_avatar(swimmer_id):
 @app.route('/swimmer/info/<swimmer_id>')
 def get_swimmer_info(swimmer_id):
     # Validation
-    print(swimmer_id)
     if not is_valid_id(swimmer_id):
         return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'})
     swimmer = Swimmer.query.get(int(swimmer_id))
@@ -48,7 +47,7 @@ def get_swimmer_info(swimmer_id):
 def swimmer_add_lap():
     swimmer_id = request.form.get('id')
 
-    # Validate form data
+    # Validate
     if not is_valid_id(swimmer_id):
         return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'})
     swimmer = Swimmer.query.get(int(swimmer_id))
@@ -68,7 +67,7 @@ def add_new_swimmer():
     swimmer_name = request.form.get('name')
     swimmer_avatar = request.files.get('avatar')
 
-    # Validate form data
+    # Validate
     if not swimmer_id or not swimmer_name:
         return jsonify({'code': 1, 'msg': 'Missing parameters'})
     if not is_valid_id(swimmer_id):
