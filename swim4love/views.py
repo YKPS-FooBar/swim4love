@@ -61,6 +61,24 @@ def swimmer_add_lap():
     return jsonify({'code': 0, 'msg': 'Success'})
 
 
+@app.route('/swimmer/sub-lap', methods=['POST'])
+def swimmer_sub_lap():
+    swimmer_id = request.form.get('id')
+
+    # Validate form data
+    if not is_valid_id(swimmer_id):
+        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'})
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    if not swimmer:
+        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'})
+
+    # Decrement swimmer lap count
+    swimmer.laps -= 1
+    db.session.commit()
+
+    return jsonify({'code': 0, 'msg': 'Success'})
+
+
 @app.route('/swimmer/add', methods=['POST'])
 def add_new_swimmer():
     swimmer_id = request.form.get('id')
