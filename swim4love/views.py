@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from flask import request, render_template, jsonify, send_from_directory
+from flask import request, render_template, jsonify, send_from_directory, redirect, url_for
 from flask_socketio import emit
 
 from swim4love import app, db, socketio
@@ -121,8 +121,11 @@ def socketio_new_connection():
 
 ##################### Web Pages #####################
 
-@app.route('/leaderboard')
 @app.route('/')
+def home():
+    return redirect(url_for('leaderboard_page'))
+
+@app.route('/leaderboard')
 def leaderboard_page():
     return render_template('leaderboard.html')
 
