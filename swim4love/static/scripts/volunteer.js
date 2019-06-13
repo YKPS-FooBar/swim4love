@@ -114,9 +114,8 @@ function addSwimmer(id) {
 }
 
 function updateNameFromServer(id) {
-    var code;
     return $.getJSON(`/swimmer/info/${id}`).done(response => {
-        code = response.code;
+        var code = response.code;
         if (code === 0) {
             idsToNames[id] = response.data.name;
         } else if (id in idsToNames) {
@@ -145,11 +144,33 @@ function hideAddSwimmerDiv() {
     $('#add-swimmer-input').val('');
 }
 
+function updateLaps(id) {
+    return updateNameFromServer(id).done(response => {
+        $(`#swimmer-${id} > .swimmers-lap-count`).html(response.data.laps);
+    });
+}
+
 function appendSwimmerToList(id) {
-    var swimmerItem = $('<li>');
+    var swimmerItem = $('<li>').attr('id', `swimmer-${id}`);
+    $('<button>').html('-').css('color', 'red').appendTo(swimmerItem).click(() => {
+        $.post('/swimmer/sub-lap', {id: id}, () => {
+            console.log(`1 lap subtracted from swimmer #${id}`);
+        }).done(() => updateLaps(id));
+    });
+    $('<span>').addClass('swimmers-lap-count').appendTo(swimmerItem);
+    updateLaps(id);
+    $('<button>').html('+').css('color', 'red').appendTo(swimmerItem).click(() => {
+        $.post('/swimmer/add-lap', {id: id}, () => {
+            console.log(`1 lap added to swimmer #${id}`);
+        }).done(() => updateLaps(id));
+    });
     $('<img>').width('50px').height('50px').attr('src', `/swimmer/avatar/${id}`).appendTo(swimmerItem);
     $('<span>').html(id).appendTo(swimmerItem);
     $('<span>').html(idsToNames[id]).appendTo(swimmerItem);
+    $('<button>').html('X').css('color', 'red').appendTo(swimmerItem).click(() => {
+        setSwimmers(getSwimmers().filter(idFromCookies => idFromCookies !== id));
+        updateSwimmersListFromCookies();
+    });
     swimmerItem.appendTo('#swimmers-list');
 }
 
