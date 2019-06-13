@@ -24,8 +24,7 @@ def get_swimmer_avatar(swimmer_id):
     avatar_file = '{}.jpg'.format(swimmer_id)
     if Path('{}/{}/{}'.format(ROOT_DIR, AVATAR_DIR, avatar_file)).is_file():
         return send_from_directory(AVATAR_DIR, avatar_file)
-    else:
-        return send_from_directory(AVATAR_DIR, DEFAULT_AVATAR)
+    return send_from_directory(AVATAR_DIR, DEFAULT_AVATAR)
 
 
 @app.route('/swimmer/info/<swimmer_id>')
