@@ -1,8 +1,11 @@
-/* A large portion of this code is copied from <https://github.com/serratus/quaggaJS/blob/master/example/live_w_locator.js> */
+/**
+ * A large portion of this code is copied from <https://github.com/serratus/quaggaJS/blob/master/example/live_w_locator.js>
+ * We will use the Cookie 'swimmers' to store a json-styled list of swimmers
+ */
+
+var idsToNames = {};
 
 var isCameraOn = false;
-
-// We will use the Cookie 'swimmers' to store a json-styled list of swimmers
 
 // config, for Quagga.init(config, callback)
 var config = {
@@ -28,9 +31,9 @@ var config = {
         // Subsampling picture to half of resolution
         halfSample: true
     },
-    // Number of workers
+    // Number of workers, can be set to / analogous to number of cores of CPU
     numOfWorkers: 4,
-    // Number of scans per second
+    // Maximum number of scans per second
     frequency: 5,
     decoder: {readers: ['code_128_reader']},
     // To locate the barcode on image
@@ -62,10 +65,6 @@ function startCamera() {
         }
     });
 
-    // Quagga.onProcessed(result => {
-    //     process(result);
-    // });
-
     // 'result' looks like <https://github.com/serratus/quaggaJS#the-result-object>.
     // When detected, stop camera and log
     Quagga.onDetected(result => {
@@ -73,64 +72,130 @@ function startCamera() {
             console.log(`Detected swimmer #${id}, but the camera has already detected something else`)
             return;
         }
+        // We set it to false beforehand to prevent
+        // multiple onDetected called in a very short interval
+        // and since updateNameFromServer takes time
         isCameraOn = false;
-        var id = result.codeResult.code;
-        if (isValidId(id)) {
-            Quagga.stop();
-            $('#barcode-scanner').hide();
-            addSwimmer(id);
-        } else {
-            isCameraOn = true;
-        }
+        var id = result.codeResult.code.toString();
+        updateNameFromServer(id).done(result => {
+            if (result.code === 0) {
+                // The scanned swimmer is on the list of swimmers on the server
+                Quagga.stop();
+                $('#barcode-scanner').hide();
+                addSwimmer(id);
+            } else {
+                // Something was scanned from the webcam that is not on the swimmers list on the server
+                // TODO, visual error message
+                alert(`游泳者#${id}没有登记`)
+                isCameraOn = true;
+            }
+        });
     });
 }
 
 function addSwimmer(id) {
+    // This function temporarily allows IDs that are not on server,
+    // since checking if they are on server takes time and is asynchronous,
+    // and updateSwimmersListFromCookies checks if the ID is on the server anyways
     if (!isValidId(id)) {
         // TODO, visual error message
-        alert(id + '格式不正确');
+        alert(id + ' 格式不正确');
         return;
     }
     console.log(`Added swimmer #${id}`);
-    // TODO, add swimmer to cookies
-    Cookies.get('swimmers');
-    $('#swimmers-list').prepend(`<li>Swimmer #${id}</li>`);
+    // Normally, id won't be in getSwimmers
+    // But just in case it is, we bring it to the top of the list to show the volunteer
+    var swimmers = getSwimmers().filter(idFromCookies => idFromCookies !== id);
+    swimmers.unshift(id);
+    setSwimmers(swimmers);
 
-    updateSwimmersFromCookies();
+    updateSwimmersListFromCookies();
     hideAddSwimmerDiv();
 }
 
-function isValidId(swimmerId) {
-    return /^[0-9][0-9][0-9]$/.test(swimmerId);
+function updateNameFromServer(id) {
+    var code;
+    return $.getJSON(`/swimmer/info/${id}`).done(response => {
+        code = response.code;
+        if (code === 0) {
+            idsToNames[id] = response.data.name;
+        } else if (id in idsToNames) {
+            delete idsToNames[id];
+        }
+    });
+}
+
+function isValidId(id) {
+    return /^[0-9][0-9][0-9]$/.test(id);
 }
 
 function showAddSwimmerDiv() {
+    startCamera();
     $('#add-swimmer').show();
     $('#swimmers').hide();
     $('#add-swimmer-input').focus();
 }
 
 function hideAddSwimmerDiv() {
+    isCameraOn = false;
+    Quagga.stop();
+    $('#barcode-scanner').hide();
     $('#add-swimmer').hide();
     $('#swimmers').show();
     $('#add-swimmer-input').val('');
 }
 
-function updateSwimmersFromCookies() {
-    // TODO, update $('#swimmers-list') with <li>s of swimmers
+function appendSwimmerToList(id) {
+    var swimmerItem = $('<li>');
+    $('<img>').width('50px').height('50px').attr('src', `/swimmer/avatar/${id}`).appendTo(swimmerItem);
+    $('<span>').html(id).appendTo(swimmerItem);
+    $('<span>').html(idsToNames[id]).appendTo(swimmerItem);
+    swimmerItem.appendTo('#swimmers-list');
+}
+
+function updateSwimmersListFromCookies() {
+    $('#swimmers-list').html('');
+    var swimmers = getSwimmers();
+    swimmers.forEach(id => {
+        // appendSwimmerToList requires id to be in idsToNames
+        if (id in idsToNames) {
+            appendSwimmerToList(id);
+        } else {
+            updateNameFromServer(id).done(result => {
+                if (result.code === 0) {
+                    // updateNameFromServer will put id: name into idsToNames
+                    appendSwimmerToList(id);
+                } else {
+                    swimmers.splice(swimmers.indexOf(id), 1);
+                    setSwimmers(swimmers);
+                    // TODO, visual error message
+                    alert(`游泳者#${id}没有登记`)
+                }
+            });
+        }
+    })
+}
+
+function getSwimmers() {
+    return JSON.parse(Cookies.get('swimmers'));
+}
+
+function setSwimmers(swimmersList) {
+    // js-cookie automatically converts arrays / objects to URL-encoded JSONified strings
+    return Cookies.set('swimmers', swimmersList, {expires: 7, path: '/'});
 }
 
 $(document).ready(() => {
     $.ajaxSetup({cache: false});
 
-    $('#start-camera-button').click(startCamera);
-    $('#add-swimmer-input-button').click(() => {
-        addSwimmer($('#add-swimmer-input').val());
-        $('#add-swimmer-input').val('');
-        $('#add-swimmer-input').focus();
+    $('#add-swimmer-input').keyup(() => {
+        if (isValidId($('#add-swimmer-input').val())) {
+            addSwimmer($('#add-swimmer-input').val());
+            $('#add-swimmer-input').val('').focus();
+        }
     });
     $('#show-add-swimmer').click(showAddSwimmerDiv);
     $('#add-swimmer-back').click(hideAddSwimmerDiv);
 
-    updateSwimmersFromCookies();
+    updateSwimmersListFromCookies();
 });
