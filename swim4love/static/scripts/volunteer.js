@@ -1,7 +1,10 @@
 /**
  * A large portion of this code is copied from <https://github.com/serratus/quaggaJS/blob/master/example/live_w_locator.js>
- * We will use the Cookie 'swimmers' to store a json-styled list of swimmers
  */
+
+if (!Cookies.get('swimmers')) {
+    Cookies.set('swimmers', []);
+}
 
 var idsToNames = {};
 
