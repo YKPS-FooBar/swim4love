@@ -125,6 +125,7 @@ def socketio_new_connection():
 def home():
     return redirect(url_for('leaderboard_page'))
 
+
 @app.route('/leaderboard')
 def leaderboard_page():
     swimmers = sorted(Swimmer.query.all(), key=lambda x: x.laps, reverse=True)
