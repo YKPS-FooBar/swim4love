@@ -16,10 +16,10 @@ from swim4love.site_config import *
 def get_swimmer_avatar(swimmer_id):
     # Validation
     if not is_valid_id(swimmer_id):
-        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'}), 400
+        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'})
     swimmer = Swimmer.query.get(int(swimmer_id))
     if not swimmer:
-        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'}), 404
+        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'})
 
     avatar_file = '{}.jpg'.format(swimmer_id)
     if Path('{}/{}/{}'.format(ROOT_DIR, AVATAR_DIR, avatar_file)).is_file():
@@ -31,11 +31,12 @@ def get_swimmer_avatar(swimmer_id):
 @app.route('/swimmer/info/<swimmer_id>')
 def get_swimmer_info(swimmer_id):
     # Validation
+    print(swimmer_id)
     if not is_valid_id(swimmer_id):
-        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'}), 400
+        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'})
     swimmer = Swimmer.query.get(int(swimmer_id))
     if not swimmer:
-        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'}), 404
+        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'})
 
     # Fetch swimmer information
     data = {'id': swimmer.id, 'name': swimmer.name, 'laps': swimmer.laps}
@@ -49,10 +50,10 @@ def swimmer_add_lap():
 
     # Validate form data
     if not is_valid_id(swimmer_id):
-        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'}), 400
+        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'})
     swimmer = Swimmer.query.get(int(swimmer_id))
     if not swimmer:
-        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'}), 404
+        return jsonify({'code': 3, 'msg': 'Swimmer does not exist'})
 
     # Increment swimmer lap count
     swimmer.laps += 1
@@ -69,13 +70,13 @@ def add_new_swimmer():
 
     # Validate form data
     if not swimmer_id or not swimmer_name:
-        return jsonify({'code': 1, 'msg': 'Missing parameters'}), 400
+        return jsonify({'code': 1, 'msg': 'Missing parameters'})
     if not is_valid_id(swimmer_id):
-        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'}), 400
+        return jsonify({'code': 1, 'msg': 'Invalid swimmer ID'})
     # swimmer_id should not be replaced with int(swimmer_id)
     # because it is used later when saving the avatar
     if Swimmer.query.get(int(swimmer_id)):
-        return jsonify({'code': 2, 'msg': 'Swimmer ID already exists'}), 409
+        return jsonify({'code': 2, 'msg': 'Swimmer ID already exists'})
 
     # Add swimmer into database
     swimmer = Swimmer(id=int(swimmer_id), name=swimmer_name, laps=0)
