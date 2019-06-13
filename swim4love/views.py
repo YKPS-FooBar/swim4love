@@ -78,6 +78,25 @@ def swimmer_sub_lap():
     return jsonify({'code': 0, 'msg': 'Success'})
 
 
+# Just to take care of the accidental child.
+@app.route('/swimmer/delete', methods=['POST'])
+def swimmer_sub_lap():
+    swimmer_id = request.form.get('id')
+
+    # Validate form data
+    if not is_valid_id(swimmer_id):
+        return get_error_json(1)
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    if not swimmer:
+        return get_error_json(3)
+
+    # rm -rf it
+    Swimmer.query.filter_by(id=int(swimmer_id)).delete()
+    db.session.commit()
+
+    return jsonify({'code': 0, 'msg': 'Success'})
+
+
 @app.route('/swimmer/add', methods=['POST'])
 def add_new_swimmer():
     swimmer_id = request.form.get('id')
