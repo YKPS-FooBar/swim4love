@@ -1,3 +1,7 @@
+# Root URL
+print('change localhost to swim4love.com in production environment')
+ROOT_URL = 'http://localhost:5000'
+
 # Length of digits in swimmer's ID
 SWIMMER_ID_LENGTH = 3
 
