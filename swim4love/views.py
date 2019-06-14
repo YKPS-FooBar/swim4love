@@ -127,15 +127,27 @@ def delete_swimmer():
 
 ##################### SocketIO #####################
 
+@app.after_request
+def broadcast_swimmers(response):
+    socketio.emit('swimmers', get_swimmers_data(), json=True)
+    return response
+
+
+def get_swimmers_data():
+    return {swimmer.id: {'id': swimmer.id,
+                         'name': swimmer.name,
+                         'laps': swimmer.laps}
+            for swimmer in Swimmer.query.all()}
+
+
 @socketio.on('connect')
 def socketio_new_connection():
     # By design pattern, this should be at debug level.
     app.logger.info('New leaderboard connection')
     try:
-        emit('init', swimmers_data, json=True)
+        emit('init', get_swimmers_data(), json=True)
     except Exception as e:
         app.logger.error(str(e))
-
 
 
 ##################### Web Pages #####################
