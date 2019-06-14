@@ -7,11 +7,12 @@ from swim4love.helper import is_valid_id
 
 
 with webdriver.Chrome() as driver:
+    driver.get(ROOT_URL + '/leaderboard')
     while True:
-        driver.get(ROOT_URL + '/leaderboard')
         swimmer_id = input('Swimmer ID: ')
         if not is_valid_id(swimmer_id):
             print('Invalid swimmer ID')
             continue
         driver.get(ROOT_URL + '/achievement/' + swimmer_id)
-        time.sleep(5)
+        time.sleep(8)
+        driver.get(ROOT_URL + '/leaderboard')

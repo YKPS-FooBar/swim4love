@@ -175,11 +175,25 @@ def volunteer_page():
 
 @app.route('/achievement/<swimmer_id>')
 def achievement_page(swimmer_id):
+    # Validation
+    if not is_valid_id(swimmer_id):
+        return get_error_json(1)
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    if not swimmer:
+        return get_error_json(3)
+
     return render_template('achievement.html', id=swimmer_id)
 
 
 @app.route('/certificate/<swimmer_id>')
 def certificate_page(swimmer_id):
+    # Validation
+    if not is_valid_id(swimmer_id):
+        return get_error_json(1)
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    if not swimmer:
+        return get_error_json(3)
+
     swimmer = Swimmer.query.get(int(swimmer_id))
     return render_template('certificate.html',
                            id=swimmer.id,
@@ -189,6 +203,13 @@ def certificate_page(swimmer_id):
 
 @app.route('/print-certificate/<swimmer_id>')
 def print_certificate_page(swimmer_id):
+    # Validation
+    if not is_valid_id(swimmer_id):
+        return get_error_json(1)
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    if not swimmer:
+        return get_error_json(3)
+
     swimmer = Swimmer.query.get(int(swimmer_id))
     return render_template('print_certificate.html',
                            name=swimmer.name,
