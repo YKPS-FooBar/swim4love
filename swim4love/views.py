@@ -180,4 +180,16 @@ def achievement_page(swimmer_id):
 
 @app.route('/certificate/<swimmer_id>')
 def certificate_page(swimmer_id):
-    return f'{swimmer_id} certificate not implemented', 404
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    return render_template('certificate.html',
+                           id=swimmer.id,
+                           name=swimmer.name,
+                           distance=swimmer.laps * LAP_LENGTH)
+
+
+@app.route('/print-certificate/<swimmer_id>')
+def print_certificate_page(swimmer_id):
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    return render_template('print_certificate.html',
+                           name=swimmer.name,
+                           distance=swimmer.laps * LAP_LENGTH)
