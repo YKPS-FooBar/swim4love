@@ -3,7 +3,7 @@ const METER_UPDATE_SPAN = 400; // in milliseconds
 const LEADER_COLS_WIDTH = [0, 0.08, 0.6, 0.75];
 const LEADER_LINE_HEIGHT = 46 * 1.5;
 
-const SERVER_URL = 'http://leaderboard.swim4love.com:8080';
+const SERVER_URL = window.location.origin;
 const SWIMMER_DATA_FILE = 'stat.json';
 const GOLD_MEDAL_LAP_COUNT = 100;
 const SILVER_MEDAL_LAP_COUNT = 50;

@@ -129,7 +129,7 @@ def delete_swimmer():
 
 @socketio.on('connect')
 def socketio_new_connection():
-	# By design pattern, this should be at debug level.
+    # By design pattern, this should be at debug level.
     app.logger.info('New leaderboard connection')
     try:
         emit('init', swimmers_data, json=True)
