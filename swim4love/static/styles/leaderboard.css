@@ -50,10 +50,10 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    /* background: linear-gradient(-225deg, #22E1FF 0%, #1D8FE1 48%, #625EB1 100%); */
-    background-image: url(../images/gradient2.png);
-    background-repeat: repeat-x;
-    /* animation: flowing-animation 15s linear infinite; */
+    background: linear-gradient(-50deg, #1D8FE1 30%, #19AAF0 50%, #1D8FE1 70%);
+    /* background-image: url(../images/gradient2.png); */
+    /* background-repeat: repeat-x; */
+    animation: flowing-animation 15s linear infinite;
 }
 
 /* Header */
