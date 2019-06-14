@@ -46,8 +46,8 @@ function process_data(raw, callback=update_leaderboard) {
     tally(newTotal);
 
     topTen = data.slice(0, 10);
-    leaderboard = topTen;
     callback();
+    leaderboard = topTen;
     data.forEach((e, i) => {
         previousData[e.id] = e.laps;
     });
@@ -55,10 +55,6 @@ function process_data(raw, callback=update_leaderboard) {
 
 
 function update_leaderboard() {
-    if (leaderboard.length > topTen.length) {
-        console.warn('Suspicious decreased leaderboard players!');
-        return;
-    }
     let leaderboardIds = leaderboard.map(e => e.id);
     let topTenIds = topTen.map(e => e.id);
     leaderboard.forEach(e => {
