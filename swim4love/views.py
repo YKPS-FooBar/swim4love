@@ -57,6 +57,8 @@ def swimmer_add_lap():
     swimmer.laps += 1
     db.session.commit()
 
+    broadcast_swimmers()
+
     return jsonify({'code': 0, 'msg': 'Success'})
 
 
@@ -74,6 +76,8 @@ def swimmer_sub_lap():
     # Decrement swimmer lap count
     swimmer.laps -= 1
     db.session.commit()
+
+    broadcast_swimmers()
 
     return jsonify({'code': 0, 'msg': 'Success'})
 
@@ -103,6 +107,8 @@ def add_new_swimmer():
     if swimmer_avatar:
         swimmer_avatar.save('{}/{}/{}.jpg'.format(ROOT_DIR, AVATAR_DIR, swimmer_id))
 
+    broadcast_swimmers()
+
     return jsonify({'code': 0, 'msg': 'Success'})
 
 
@@ -122,6 +128,8 @@ def delete_swimmer():
     Swimmer.query.filter_by(id=int(swimmer_id)).delete()
     db.session.commit()
 
+    broadcast_swimmers()
+
     return jsonify({'code': 0, 'msg': 'Success'})
 
 
@@ -134,10 +142,8 @@ def get_swimmers_data():
             for swimmer in Swimmer.query.all()}
 
 
-@app.after_request
-def broadcast_swimmers(response):
+def broadcast_swimmers():
     socketio.emit('swimmers', get_swimmers_data(), json=True)
-    return response
 
 
 @socketio.on('connect')
