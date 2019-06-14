@@ -4,8 +4,8 @@ function initLeaderboard() {
     // Align elements
     leaderWidth = $('.leaderboard').width();
     for (let i = 1; i <= LEADER_COLS_WIDTH.length; i++) {
-        $(`.leader-title :nth-child(${i})`).css('left', LEADER_COLS_WIDTH[i - 1] * leaderWidth);
-        $(`.participant :nth-child(${i})`).css('left', LEADER_COLS_WIDTH[i] * leaderWidth);
+        $(`.leader-title > :nth-child(${i})`).css('left', LEADER_COLS_WIDTH[i - 1] * leaderWidth);
+        $(`.participant > :nth-child(${i})`).css('left', LEADER_COLS_WIDTH[i] * leaderWidth);
     }
     for (let i = 1; i <= 10; i++) {
         $(`.participant:nth-child(${i}) *`).css('top', i * LEADER_LINE_HEIGHT);
@@ -28,7 +28,9 @@ function insert_player(player, compareArray=leaderboard, insertRank=null, init=t
     let name = player.name;
     let laps = player.laps;
     let id = player.id;
-    if (laps === 0) return;
+    // TODO, we have to think about this
+    // can swimmers who signed up first but haven't swimmed be on the list?
+    // if (laps === 0) return;
     let meters = laps * LAP_LENGTH;
     let rank = (![null, undefined, NaN].includes(insertRank)) ? insertRank : get_rank(laps, compareArray);
     let initPos = init ? (rank + 2) * LEADER_LINE_HEIGHT : 800; // for rise up animation
