@@ -4,8 +4,8 @@ function initLeaderboard() {
     // Align elements
     leaderWidth = $('.leaderboard').width();
     for (let i = 1; i <= LEADER_COLS_WIDTH.length; i++) {
-        $(`.leader-title:nth-child(${i})`).css('left', LEADER_COLS_WIDTH[i - 1] * leaderWidth);
-        $(`.participant:nth-child(${i})`).css('left', LEADER_COLS_WIDTH[i] * leaderWidth);
+        $(`.leader-title > :nth-child(${i})`).css('left', LEADER_COLS_WIDTH[i - 1] * leaderWidth);
+        $(`.participant > :nth-child(${i})`).css('left', LEADER_COLS_WIDTH[i] * leaderWidth);
     }
     for (let i = 1; i <= 10; i++) {
         $(`.participant:nth-child(${i}) *`).css('top', i * LEADER_LINE_HEIGHT);
