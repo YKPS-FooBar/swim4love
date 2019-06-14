@@ -2,15 +2,16 @@ import io
 import os
 # from time import sleep
 from pathlib import Path
+from urllib.parse import urljoin
 
 import requests
 from PIL import Image
 
 from swim4love.helper import is_valid_id
+from swim4love.site_config import ROOT_URL
 
 
-raise NotImplementedError('please change the URL to *the* URL')
-SWIMMER_ADD_URL = 'http://localhost:5000/swimmer/add'
+swimmer_add_url = urljoin(ROOT_URL, '/swimmer/add')
 raise NotImplementedError('please change path to local avatar')
 LOCAL_AVATAR_DIR = Path('.')
 
@@ -55,12 +56,12 @@ while True:
     is_new_avatar = avatar_fileno != last_avatar_fileno
     if is_new_avatar:
         print('Found NEW avatar')
-        response = requests.post(SWIMMER_ADD_URL,
+        response = requests.post(swimmer_add_url,
                                  data={'id': swimmer_id, 'name': name},
                                  files={'avatar': avatar_bytes})
     else:
         print('Using DEFAULT avatar')
-        response = requests.post(SWIMMER_ADD_URL,
+        response = requests.post(swimmer_add_url,
                                  data={'id': swimmer_id, 'name': name})
 
     if response.json()['code'] == 0:
