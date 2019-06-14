@@ -154,27 +154,27 @@ function updateLaps(id) {
 }
 
 function appendSwimmerToList(id) {
-    var swimmerItem = $('<li>').attr('id', `swimmer-${id}`);
-    $('<button>').html('-').css('color', 'red').appendTo(swimmerItem).click(() => {
+    var $swimmerItem = $('<li>').attr('id', `swimmer-${id}`);
+    $('<button>').html('-').css('color', 'red').appendTo($swimmerItem).click(() => {
         $.post('/swimmer/sub-lap', {id: id}, () => {
             console.log(`1 lap subtracted from swimmer #${id}`);
         }).done(() => updateLaps(id));
     });
-    $('<span>').addClass('swimmers-lap-count').appendTo(swimmerItem);
+    $('<span>').addClass('swimmers-lap-count').appendTo($swimmerItem);
     updateLaps(id);
-    $('<button>').html('+').css('color', 'red').appendTo(swimmerItem).click(() => {
+    $('<button>').html('+').css('color', 'red').appendTo($swimmerItem).click(() => {
         $.post('/swimmer/add-lap', {id: id}, () => {
             console.log(`1 lap added to swimmer #${id}`);
         }).done(() => updateLaps(id));
     });
-    $('<img>').width('50px').height('50px').attr('src', `/swimmer/avatar/${id}`).appendTo(swimmerItem);
-    $('<span>').html(id).appendTo(swimmerItem);
-    $('<span>').html(idsToNames[id]).appendTo(swimmerItem);
-    $('<button>').html('X').css('color', 'red').appendTo(swimmerItem).click(() => {
+    $('<img>').width('50px').height('50px').attr('src', `/swimmer/avatar/${id}`).appendTo($swimmerItem);
+    $('<span>').html(id).appendTo($swimmerItem);
+    $('<span>').html(idsToNames[id]).appendTo($swimmerItem);
+    $('<button>').html('X').css('color', 'red').appendTo($swimmerItem).click(() => {
         setSwimmers(getSwimmers().filter(idFromCookies => idFromCookies !== id));
         updateSwimmersListFromCookies();
     });
-    swimmerItem.appendTo('#swimmers-list');
+    $swimmerItem.appendTo('#swimmers-list');
 }
 
 function updateSwimmersListFromCookies() {
