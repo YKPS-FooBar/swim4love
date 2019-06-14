@@ -149,30 +149,32 @@ function hideAddSwimmerDiv() {
 
 function updateLaps(id) {
     return updateNameFromServer(id).done(response => {
-        $(`#swimmer-${id} > .swimmers-lap-count`).html(response.data.laps);
+        $(`#swimmer-${id} .swimmer-lap-count`).html(response.data.laps + ' 圈');
     });
 }
 
 function appendSwimmerToList(id) {
-    var $swimmerItem = $('<li>').attr('id', `swimmer-${id}`);
-    $('<button>').html('-').css('color', 'red').appendTo($swimmerItem).click(() => {
+    var $swimmerItem = $('<div>').attr('id', `swimmer-${id}`).addClass('swimmer-item');
+    $('<img>').attr('src', `/swimmer/avatar/${id}`).addClass('swimmer-avatar').appendTo($swimmerItem);
+    var $swimmerNameItem = $('<div>').css('width', 'calc(80% - 115px)').appendTo($swimmerItem);
+    $('<p>').html('#' + id).addClass('swimmer-id').appendTo($swimmerNameItem);
+    $('<p>').html(idsToNames[id]).addClass('swimmer-name').appendTo($swimmerNameItem);
+    $('<p>').addClass('swimmer-lap-count').appendTo($swimmerNameItem);
+    updateLaps(id);
+    var $swimmerButtonsItem = $('<div>').width(105).appendTo($swimmerItem);
+    $('<span>').addClass('swimmer-button fas fa-trash').appendTo($swimmerButtonsItem).click(() => {
+        setSwimmers(getSwimmers().filter(idFromCookies => idFromCookies !== id));
+        updateSwimmersListFromCookies();
+    });
+    $('<span>').addClass('swimmer-button fas fa-minus').appendTo($swimmerButtonsItem).click(() => {
         $.post('/swimmer/sub-lap', {id: id}, () => {
             console.log(`1 lap subtracted from swimmer #${id}`);
         }).done(() => updateLaps(id));
     });
-    $('<span>').addClass('swimmers-lap-count').appendTo($swimmerItem);
-    updateLaps(id);
-    $('<button>').html('+').css('color', 'red').appendTo($swimmerItem).click(() => {
+    $('<span>').addClass('swimmer-button fas fa-plus').appendTo($swimmerButtonsItem).click(() => {
         $.post('/swimmer/add-lap', {id: id}, () => {
             console.log(`1 lap added to swimmer #${id}`);
         }).done(() => updateLaps(id));
-    });
-    $('<img>').width('50px').height('50px').attr('src', `/swimmer/avatar/${id}`).appendTo($swimmerItem);
-    $('<span>').html(id).appendTo($swimmerItem);
-    $('<span>').html(idsToNames[id]).appendTo($swimmerItem);
-    $('<button>').html('X').css('color', 'red').appendTo($swimmerItem).click(() => {
-        setSwimmers(getSwimmers().filter(idFromCookies => idFromCookies !== id));
-        updateSwimmersListFromCookies();
     });
     $swimmerItem.appendTo('#swimmers-list');
 }
