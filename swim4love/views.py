@@ -196,7 +196,7 @@ def certificate_page(swimmer_id):
 
     swimmer = Swimmer.query.get(int(swimmer_id))
     return render_template('certificate.html',
-                           id=swimmer.id,
+                           id=swimmer_id,
                            name=swimmer.name,
                            distance=swimmer.laps * LAP_LENGTH)
 
