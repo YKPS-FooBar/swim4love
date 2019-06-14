@@ -14,6 +14,7 @@ ERRORS = {
     3: 'Swimmer does not exist',
 }
 
+
 def return_error_json(func):
     '''
     Catch any exception not handled and return
