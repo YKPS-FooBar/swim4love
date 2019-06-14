@@ -51,7 +51,7 @@ var idsToNames = {};
 //         if (error) {
 //             console.log(error);
 //         } else {
-//             // TODO, see if the camera is able to zoom or turn on torch: (check <https://serratus.github.io/quaggaJS/#tipsandtricks>)
+//             // TD, see if the camera is able to zoom or turn on torch: (check <https://serratus.github.io/quaggaJS/#tipsandtricks>)
 //             //   var track = Quagga.CameraAccess.getActiveTrack();
 //             //   if (typeof track.getCapabilities === 'function') {
 //             //       var capabilities = track.getCapabilities();
@@ -62,7 +62,7 @@ var idsToNames = {};
 //             // capabilities.zoom would require you to check the documentation
 //             // to zoom, track.applyConstraints({advanced: [{zoom: parseFloat(value)}]});
 //             // to torch, track.applyConstraints({advanced: [{torch: !!value}]});
-//             // TODO, allow user to choose video device from Quagga.enumerateVideoDevices().then(devices => {do something with device names; check documentation})
+//             // TD, allow user to choose video device from Quagga.enumerateVideoDevices().then(devices => {do something with device names; check documentation})
 //             //       (label for default device is Quagga.CameraAccess.getActiveStreamLabel())
 //             Quagga.start()
 //         }
@@ -88,7 +88,7 @@ var idsToNames = {};
 //                 addSwimmer(id);
 //             } else {
 //                 // Something was scanned from the webcam that is not on the swimmers list on the server
-//                 // TODO, visual error message
+//                 // TD, visual error message
 //                 alert(`游泳者#${id}没有登记`)
 //                 isCameraOn = true;
 //             }
