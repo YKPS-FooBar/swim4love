@@ -127,17 +127,17 @@ def delete_swimmer():
 
 ##################### SocketIO #####################
 
-@app.after_request
-def broadcast_swimmers(response):
-    socketio.emit('swimmers', get_swimmers_data(), json=True)
-    return response
-
-
 def get_swimmers_data():
     return {swimmer.id: {'id': swimmer.id,
                          'name': swimmer.name,
                          'laps': swimmer.laps}
             for swimmer in Swimmer.query.all()}
+
+
+@app.after_request
+def broadcast_swimmers(response):
+    socketio.emit('swimmers', get_swimmers_data(), json=True)
+    return response
 
 
 @socketio.on('connect')
