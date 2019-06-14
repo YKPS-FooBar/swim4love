@@ -159,8 +159,7 @@ def home():
 
 @app.route('/leaderboard')
 def leaderboard_page():
-    swimmers = sorted(Swimmer.query.all(), key=lambda x: x.laps, reverse=True)
-    return render_template('leaderboard.html', swimmers=swimmers)
+    return render_template('leaderboard.html')
 
 
 @app.route('/volunteer')
