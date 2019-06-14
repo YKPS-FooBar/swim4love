@@ -175,7 +175,7 @@ def volunteer_page():
 
 @app.route('/achievement/<swimmer_id>')
 def achievement_page(swimmer_id):
-    return f'{swimmer_id} achievement not implemented', 404
+    return render_template('achievement.html', id=swimmer_id)
 
 
 @app.route('/certificate/<swimmer_id>')
