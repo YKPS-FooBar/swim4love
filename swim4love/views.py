@@ -160,7 +160,7 @@ def socketio_new_connection():
 
 @app.route('/')
 def home():
-    return redirect(url_for('leaderboard_page'))
+    return redirect(url_for('volunteer_page'))
 
 
 @app.route('/leaderboard')
