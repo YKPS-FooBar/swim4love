@@ -9,7 +9,9 @@ from PIL import Image
 from swim4love.helper import is_valid_id
 
 
+raise NotImplementedError('please change the URL to *the* URL')
 SWIMMER_ADD_URL = 'http://localhost:5000/swimmer/add'
+raise NotImplementedError('please change path to local avatar')
 LOCAL_AVATAR_DIR = Path('.')
 
 
