@@ -13,7 +13,7 @@ from swim4love.site_config import ROOT_URL
 
 swimmer_add_url = urljoin(ROOT_URL, '/swimmer/add')
 # raise NotImplementedError('please change path to local avatar')
-LOCAL_AVATAR_DIR = Path('avatars')
+LOCAL_AVATAR_DIR = Path('/Users/davidm/Downloads/s4l/swim4ove')
 
 
 def get_last_avatar_bytes_and_fileno():
