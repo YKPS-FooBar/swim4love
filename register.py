@@ -1,6 +1,6 @@
 import io
 import os
-# from time import sleep
+from time import sleep
 from pathlib import Path
 from urllib.parse import urljoin
 
@@ -52,6 +52,7 @@ while True:
     name = input('Name: ')
 
     input('Press enter after photo is taken: ')
+    sleep(3)
     avatar_bytes, avatar_fileno = get_last_avatar_bytes_and_fileno()
     is_new_avatar = avatar_fileno != last_avatar_fileno
     if is_new_avatar:
