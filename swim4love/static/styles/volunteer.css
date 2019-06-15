@@ -7,7 +7,7 @@
 
 html {
     background: #005f90;
-    margin: 40px 30px;
+    margin: 40px 20px;
     /* margin-top: env(safe-area-inset-top);
     margin-left: env(safe-area-inset-left);
     margin-right: env(safe-area-inset-right);
@@ -83,4 +83,33 @@ hr {
 
 .swimmer-button:nth-child(1) {
     /* color: #e74c3c; */
+}
+
+#add-swimmer-back {
+    padding: 0;
+}
+
+#add-swimmer-msg {
+    display: block;
+    margin: 10vh 0 20px;
+}
+
+#input-digits-container {
+    margin: 0 auto;
+}
+
+.input-digit {
+    margin: 0 5px;
+    padding: 0;
+    width: 48px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid white;
+    border-radius: 0;
+    font-size: 48px;
+    text-align: center;
+}
+
+.input-digit:focus {
+    outline: none !important;
 }
