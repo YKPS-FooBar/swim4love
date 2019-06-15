@@ -15,8 +15,6 @@ SERVER_MODE = 'production'
 ##################### App Initialization #####################
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object(app_config[SERVER_MODE])
-# app.config.from_pyfile('secrets.py')
-# app.logger.setLevel(logging.INFO)
 
 db = SQLAlchemy()
 db.app = app  # Fix for weird "No application found" error
