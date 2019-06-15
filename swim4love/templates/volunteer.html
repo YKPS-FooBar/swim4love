@@ -18,9 +18,16 @@
 <body>
   <div id="page-container">
     <div id="add-swimmer" style="display: none;">
-      <button id="add-swimmer-back">返回</button>
-      <br />
-      输入游泳者3位编号：<input id="add-swimmer-input" type="number" placeholder="例：123" />
+      <p id="add-swimmer-back"><span class="fas fa-caret-left"></span>&nbsp;返回</p>
+      <strong id="add-swimmer-msg">输入游泳者 3 位编号：</strong>
+      <!-- <input id="add-swimmer-input" type="number" placeholder="例：123" /> -->
+      <table id='input-digits-container'>
+        <tr>
+          <td><input id="1" class="input-digit" type="number" pattern="[0-9]*" maxlength="1" oninput="inputNext(2)"></td>
+          <td><input id="2" class="input-digit" type="number" pattern="[0-9]*" maxlength="1" oninput="inputNext(3)"></td>
+          <td><input id="3" class="input-digit" type="number" pattern="[0-9]*" maxlength="1" oninput="autoValidateId()"></td>
+        </tr>
+      </table>
       <!-- <br />
       或扫描条形码：<div id="barcode-scanner" style="display: none;"></div> -->
     </div>

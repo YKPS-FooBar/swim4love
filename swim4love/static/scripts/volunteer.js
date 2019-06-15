@@ -144,7 +144,7 @@ function hideAddSwimmerDiv() {
     // $('#barcode-scanner').hide();
     $('#add-swimmer').hide();
     $('#swimmers').show();
-    $('#add-swimmer-input').val('');
+    $('.input-digit').val('');
 }
 
 function updateLaps(id) {
@@ -162,9 +162,11 @@ function appendSwimmerToList(id) {
     $('<p>').addClass('swimmer-lap-count').appendTo($swimmerNameItem);
     updateLaps(id);
     var $swimmerButtonsItem = $('<div>').width(105).appendTo($swimmerItem);
-    $('<span>').addClass('swimmer-button fas fa-trash').appendTo($swimmerButtonsItem).click(() => {
-        setSwimmers(getSwimmers().filter(idFromCookies => idFromCookies !== id));
-        updateSwimmersListFromCookies();
+    $('<span>').addClass('swimmer-button fas fa-trash-alt').appendTo($swimmerButtonsItem).click(() => {
+        if (confirm(`确定删除游泳者#${id}？`)) {
+            setSwimmers(getSwimmers().filter(idFromCookies => idFromCookies !== id));
+            updateSwimmersListFromCookies();
+        }
     });
     $('<span>').addClass('swimmer-button fas fa-minus').appendTo($swimmerButtonsItem).click(() => {
         $.post('/swimmer/sub-lap', {id: id}, () => {
@@ -181,7 +183,7 @@ function appendSwimmerToList(id) {
 
 function updateSwimmersListFromCookies() {
     $('#swimmers-list').html('');
-    var swimmers = getSwimmers();
+    var swimmers = getSwimmers().reverse();
     swimmers.forEach(id => {
         // appendSwimmerToList requires id to be in idsToNames
         if (id in idsToNames) {
@@ -211,15 +213,22 @@ function setSwimmers(swimmersList) {
     return Cookies.set('swimmers', swimmersList, {expires: 7, path: '/'});
 }
 
+function inputNext(next) {
+    $('#' + next).focus();
+}
+
+function autoValidateId() {
+    var inputId = $('.input-digit').toArray().map(e => $(e).val()).join('');
+    if (isValidId(inputId)) {
+        addSwimmer(inputId);
+        $('.input-digit').val('');
+        $('.input-digit#3').focus();
+    }
+}
+
 $(document).ready(() => {
     $.ajaxSetup({cache: false});
 
-    $('#add-swimmer-input').keyup(() => {
-        if (isValidId($('#add-swimmer-input').val())) {
-            addSwimmer($('#add-swimmer-input').val());
-            $('#add-swimmer-input').val('').focus();
-        }
-    });
     $('#show-add-swimmer').click(showAddSwimmerDiv);
     $('#add-swimmer-back').click(hideAddSwimmerDiv);
 
