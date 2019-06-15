@@ -45,9 +45,10 @@ hr {
 }
 
 .swimmer-avatar {
-    width: 20%;
-    height: 20%;
     margin-right: 15px;
+    width: 68px;
+    height: 68px;
+    object-fit: cover;
     /* align-self: flex-start; */
 }
 

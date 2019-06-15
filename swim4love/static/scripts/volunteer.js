@@ -135,7 +135,7 @@ function showAddSwimmerDiv() {
     // startCamera();
     $('#add-swimmer').show();
     $('#swimmers').hide();
-    $('#add-swimmer-input').focus();
+    $('.input-digit#1').focus();
 }
 
 function hideAddSwimmerDiv() {

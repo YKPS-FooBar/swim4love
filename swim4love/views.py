@@ -125,10 +125,48 @@ def delete_swimmer():
         return get_error_json(3)
 
     # rm -rf it
-    Swimmer.query.filter_by(id=int(swimmer_id)).delete()
+    Swimmer.query.get(int(swimmer_id)).delete()
     db.session.commit()
 
     broadcast_swimmers()
+
+    return jsonify({'code': 0, 'msg': 'Success'})
+
+
+@app.route('/swimmer/update-name', methods=['POST'])
+def update_swimmer_name():
+    swimmer_id = request.form.get('id')
+    swimmer_new_name = request.form.get('name')
+
+    # Validate form data
+    if not is_valid_id(swimmer_id):
+        return get_error_json(1)
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    if not swimmer:
+        return get_error_json(3)
+    
+    swimmer.name = swimmer_new_name
+    db.session.commit()
+
+    broadcast_swimmers()
+
+    return jsonify({'code': 0, 'msg': 'Success'})
+
+
+@app.route('/swimmer/update-avatar', methods=['POST'])
+def update_swimmer_avatar():
+    swimmer_id = request.form.get('id')
+    swimmer_new_avatar = request.files.get('avatar')
+
+    # Validate form data
+    if not is_valid_id(swimmer_id):
+        return get_error_json(1)
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    if not swimmer:
+        return get_error_json(3)
+    
+    if swimmer_new_avatar:
+        swimmer_new_avatar.save('{}/{}/{}.jpg'.format(ROOT_DIR, AVATAR_DIR, swimmer_id))
 
     return jsonify({'code': 0, 'msg': 'Success'})
 

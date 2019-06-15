@@ -50,9 +50,9 @@ while True:
 
     # New swimmer
     name = input('Name: ')
-    avatar_bytes, avatar_fileno = get_last_avatar_bytes_and_fileno()
 
     input('Press enter after photo is taken: ')
+    avatar_bytes, avatar_fileno = get_last_avatar_bytes_and_fileno()
     is_new_avatar = avatar_fileno != last_avatar_fileno
     if is_new_avatar:
         print('Found NEW avatar')

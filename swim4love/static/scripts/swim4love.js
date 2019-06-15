@@ -14,6 +14,8 @@ $(document).ready(() => {
     socket.on('init', raw => process_data(raw, () => topTen.forEach((e, i) => insert_player(e, null, i))));
     socket.on('swimmers', process_data);
     leaderboard = [];
+
+    // setTimeout(() => window.location.reload(), 8000);
 });
 
 

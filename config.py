@@ -25,7 +25,9 @@ class ProductionConfig(Config):
     '''Production configurations.'''
 
     ENV = 'production'
-    DEBUG = False
+    TESTING = True
+    DEBUG = True
+    SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
