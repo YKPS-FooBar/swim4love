@@ -194,8 +194,9 @@ def certificate_page(swimmer_id):
     if not swimmer:
         return get_error_json(3)
 
+    swimmer = Swimmer.query.get(int(swimmer_id))
     return render_template('certificate.html',
-                           id=swimmer.id,
+                           id=swimmer_id,
                            name=swimmer.name,
                            distance=swimmer.laps * LAP_LENGTH)
 
@@ -209,6 +210,7 @@ def print_certificate_page(swimmer_id):
     if not swimmer:
         return get_error_json(3)
 
+    swimmer = Swimmer.query.get(int(swimmer_id))
     return render_template('print_certificate.html',
                            name=swimmer.name,
                            distance=swimmer.laps * LAP_LENGTH)

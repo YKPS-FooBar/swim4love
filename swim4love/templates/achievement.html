@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel='stylesheet' href='/static/styles/achievement.css'>
+  <script type='text/javascript' src='/static/vendors/jquery-3.4.1.min.js'></script>
+  <script>
+    const id = '{{ id }}';
+  </script>
+  <script type='text/javascript' src='/static/scripts/config.js'></script>
+  <script type='text/javascript' src='/static/scripts/achievement.js'></script>
+  <script type='text/javascript' src='/static/scripts/confetti.js'></script>
+  <title>Swimmer Stats | Swim For Love</title>
+</head>
+
+<body>
+  <div id='bg' class='container-main'>
+    <canvas id='canvas'></canvas>
+    <!-- Header -->
+    <div class='container-header'>
+      <h1 class='title'>2019<br />Swim For Love</h1>
+      <div class='sep'></div>
+      <h2 class='page'>Achievements</h2>
+    </div>
+
+    <!-- Main stats -->
+    <div class='container-stat'>
+      <div class='stat avatar'>
+        <img id='avatar' src='/swimmer/avatar/{{ id }}'>
+      </div><br />
+      <div class='stat name'>
+        <span class='big' id='name'></span>
+      </div><br />
+      <div class='stat laps'>
+        <span class='small'>Total Laps</span>
+        <span class='big' id='laps'>0</span>
+      </div>
+      <div class='stat meters'>
+        <span class='small'>Total Distance</span>
+        <span class='big' id='meters'>0</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
