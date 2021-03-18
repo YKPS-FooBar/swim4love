@@ -1,0 +1,5 @@
+flask
+Flask-SQLAlchemy
+flask-socketio
+Flask-Caching
+Flask-Cors

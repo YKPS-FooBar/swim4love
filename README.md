@@ -2,26 +2,20 @@
 
 Code for Swim For Love Charity Event.
 
-The `local` directory is not a part of the Flask web application, but contains scripts to run locally on a computer (e.g. for photos / registration).
-
 ## Installation
-Make sure you have [Conda](https://github.com/conda/conda) installed.
-
 Run
 ```sh
-git clone https://github.com/YKPS-FooBar/swim4love-2019.git
-cd swim4love-2019
-conda env create -f environment.yaml
-conda activate swim4love
+git clone https://github.com/YKPS-FooBar/swim4love.git
+cd swim4love
+pip install -r requirements.txt
 ```
-in shell to download the code, create the environment, and activate.
+in shell to download the code and install prerequisites.
 
 ## Run
 Run
 ```sh
 python run.py
 ```
-in shell with activated conda environment.
 
 ### Clean data
 The code produces cache and databases storing names of swimmers, avatars, etc. To clean them, run
