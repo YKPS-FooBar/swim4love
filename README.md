@@ -1,10 +1,8 @@
-# Swim For Love 2019
+# Swim For Love
 
-All the code for the 2019 Swim For Love Charity Event.
+Code for Swim For Love Charity Event.
 
-The code for last year's event can be found at [yu-george/swim4love](https://github.com/yu-george/swim4love).
-
-The `local` directory is not a part of the Flask web application, but contains scripts to run locally on a computer.
+The `local` directory is not a part of the Flask web application, but contains scripts to run locally on a computer (e.g. for photos / registration).
 
 ## Installation
 Make sure you have [Conda](https://github.com/conda/conda) installed.
@@ -30,3 +28,6 @@ The code produces cache and databases storing names of swimmers, avatars, etc. T
 ```sh
 python clean.py
 ```
+
+### Legacy
+Pre-2019 code can be found at [yu-george/swim4love](https://github.com/yu-george/swim4love).
