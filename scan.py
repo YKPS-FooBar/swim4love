@@ -1,3 +1,8 @@
+"""For the device with direct output feed to the screen.
+
+Handles leaderboard display and achievement page upon barcode scan.
+"""
+
 import time
 
 from selenium import webdriver

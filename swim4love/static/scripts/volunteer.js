@@ -155,7 +155,6 @@ function updateLaps(id) {
 
 function appendSwimmerToList(id) {
     var $swimmerItem = $('<div>').attr('id', `swimmer-${id}`).addClass('swimmer-item');
-    $('<img>').attr('src', `/swimmer/avatar/${id}`).addClass('swimmer-avatar').appendTo($swimmerItem);
     var $swimmerNameItem = $('<div>').css('width', 'calc(80% - 115px)').appendTo($swimmerItem);
     $('<p>').html('#' + id).addClass('swimmer-id').appendTo($swimmerNameItem);
     $('<p>').html(idsToNames[id]).addClass('swimmer-name').appendTo($swimmerNameItem);

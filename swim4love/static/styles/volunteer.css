@@ -44,14 +44,6 @@ hr {
     margin-bottom: 20px;
 }
 
-.swimmer-avatar {
-    margin-right: 15px;
-    width: 68px;
-    height: 68px;
-    object-fit: cover;
-    /* align-self: flex-start; */
-}
-
 .swimmer-name {
     font-size: 20px;
     font-weight: 600;

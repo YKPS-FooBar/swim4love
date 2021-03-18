@@ -18,16 +18,13 @@
     <canvas id='canvas'></canvas>
     <!-- Header -->
     <div class='container-header'>
-      <h1 class='title'>2019<br />Swim For Love</h1>
+      <h1 class='title'><span id="year"></span><br />Swim For Love</h1>
       <div class='sep'></div>
       <h2 class='page'>Achievements</h2>
     </div>
 
     <!-- Main stats -->
     <div class='container-stat'>
-      <div class='stat avatar'>
-        <img id='avatar' src='/swimmer/avatar/{{ id }}'>
-      </div><br />
       <div class='stat name'>
         <span class='big' id='name'></span>
       </div><br />
@@ -41,5 +38,9 @@
       </div>
     </div>
   </div>
+
+  <script>
+    $('#year').text(new Date().getFullYear());
+  </script>
 </body>
 </html>

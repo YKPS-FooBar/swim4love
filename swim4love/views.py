@@ -12,20 +12,6 @@ from swim4love.site_config import *
 
 ##################### AJAX APIs #####################
 
-@app.route('/swimmer/avatar/<swimmer_id>')
-def get_swimmer_avatar(swimmer_id):
-    # Validation
-    if not is_valid_id(swimmer_id):
-        return get_error_json(1)
-    swimmer = Swimmer.query.get(int(swimmer_id))
-    if not swimmer:
-        return get_error_json(3)
-
-    avatar_file = '{}.jpg'.format(swimmer_id)
-    if Path('{}/{}/{}'.format(ROOT_DIR, AVATAR_DIR, avatar_file)).is_file():
-        return send_from_directory(AVATAR_DIR, avatar_file)
-    return send_from_directory(AVATAR_DIR, DEFAULT_AVATAR)
-
 
 @app.route('/swimmer/info/<swimmer_id>')
 def get_swimmer_info(swimmer_id):
@@ -86,15 +72,12 @@ def swimmer_sub_lap():
 def add_new_swimmer():
     swimmer_id = request.form.get('id')
     swimmer_name = request.form.get('name')
-    swimmer_avatar = request.files.get('avatar')
 
     # Validate
     if not swimmer_id or not swimmer_name:
         return jsonify({'code': 1, 'msg': 'Missing parameters'})
     if not is_valid_id(swimmer_id):
         return get_error_json(1)
-    # swimmer_id should not be replaced with int(swimmer_id)
-    # because it is used later when saving the avatar
     if Swimmer.query.get(int(swimmer_id)):
         return get_error_json(2)
 
@@ -102,10 +85,6 @@ def add_new_swimmer():
     swimmer = Swimmer(id=int(swimmer_id), name=swimmer_name, laps=0)
     db.session.add(swimmer)
     db.session.commit()
-
-    # Save swimmer avatar file
-    if swimmer_avatar:
-        swimmer_avatar.save('{}/{}/{}.jpg'.format(ROOT_DIR, AVATAR_DIR, swimmer_id))
 
     broadcast_swimmers()
 
@@ -149,24 +128,6 @@ def update_swimmer_name():
     db.session.commit()
 
     broadcast_swimmers()
-
-    return jsonify({'code': 0, 'msg': 'Success'})
-
-
-@app.route('/swimmer/update-avatar', methods=['POST'])
-def update_swimmer_avatar():
-    swimmer_id = request.form.get('id')
-    swimmer_new_avatar = request.files.get('avatar')
-
-    # Validate form data
-    if not is_valid_id(swimmer_id):
-        return get_error_json(1)
-    swimmer = Swimmer.query.get(int(swimmer_id))
-    if not swimmer:
-        return get_error_json(3)
-    
-    if swimmer_new_avatar:
-        swimmer_new_avatar.save('{}/{}/{}.jpg'.format(ROOT_DIR, AVATAR_DIR, swimmer_id))
 
     return jsonify({'code': 0, 'msg': 'Success'})
 
