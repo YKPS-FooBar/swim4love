@@ -1,3 +1,7 @@
+/**
+ * Main script file for the large screen
+ */
+
 let socket; // for websocket receiving data
 let leaderboard; // for actual displaying
 let topTen; // for updating
