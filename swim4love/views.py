@@ -23,6 +23,7 @@ def get_swimmer_info(swimmer_id):
         return get_error_json(3)
 
     # Fetch swimmer information
+    # TODO(thomas): this should be changed to also include swim time & year group
     data = {'id': swimmer.id, 'name': swimmer.name, 'laps': swimmer.laps}
 
     return jsonify({'code': 0, 'msg': 'Success', 'data': data})
@@ -135,6 +136,7 @@ def update_swimmer_name():
 ##################### SocketIO #####################
 
 def get_swimmers_data():
+    # TODO(thomas): this should be changed to also include swim time & year group
     return {swimmer.id: {'id': swimmer.id,
                          'name': swimmer.name,
                          'laps': swimmer.laps}
