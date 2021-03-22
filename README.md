@@ -11,13 +11,23 @@ pip install -r requirements.txt
 ```
 in shell to download the code and install prerequisites.
 
-## Run
+## Development Run
 Run
 ```sh
-python run.py
+FLASK_ENV=development python run.py <port>
 ```
 
-### Clean data
+## Production Run
+Run
+```sh
+python run.py <port>
+```
+
+Eventlet is automatically used.
+
+Don't use gunicorn multiple workers since it is [not supported by Flask-SocketIO](https://flask-socketio.readthedocs.io/en/latest/#gunicorn-web-server).
+
+## Clean data
 The code produces cache and databases storing names of swimmers, etc. To clean them, run
 ```sh
 python clean.py
