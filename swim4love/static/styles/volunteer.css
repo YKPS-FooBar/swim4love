@@ -7,7 +7,7 @@
 
 html {
     background: #005f90;
-    margin: 40px 20px;
+    margin: 30px;
     /* margin-top: env(safe-area-inset-top);
     margin-left: env(safe-area-inset-left);
     margin-right: env(safe-area-inset-right);
@@ -32,9 +32,11 @@ hr {
 #logo {
     display: block;
     width: 60%;
+    max-width: 400px;
+    margin-bottom: 30px;
 }
 
-#show-add-swimmer {
+#show-link-swimmer {
     margin-left: 10px;
 }
 
@@ -70,7 +72,7 @@ hr {
     margin-left: 16px;
 }
 
-.swimmer-button:nth-child(3) {
+.swimmer-button:last-child {
     margin: 0;
 }
 
@@ -78,17 +80,17 @@ hr {
     /* color: #e74c3c; */
 }
 
-#add-swimmer-back {
+#link-swimmer-back, #add-swimmer-back {
     padding: 0;
 }
 
-#add-swimmer-msg {
+.msg {
     display: block;
     margin: 10vh 0 20px;
 }
 
 #input-digits-container {
-    margin: 0 auto;
+    margin: 0 auto 30px auto;
 }
 
 .input-digit {
@@ -97,12 +99,67 @@ hr {
     width: 48px;
     background: none;
     border: none;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid #fffa;
     border-radius: 0;
     font-size: 48px;
     text-align: center;
+    -moz-appearance: textfield;
 }
 
-.input-digit:focus {
+.input-digit::-webkit-inner-spin-button,
+.input-digit::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.flashes {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.input {
+    display: block;
+    width: 240px;
+    margin: 15px auto;
+    padding: 5px;
+    background: none;
+    font-size: 24px;
+    border: none;
+}
+
+.input-digit:focus, .input:focus {
     outline: none !important;
+    border-color: #fffd;
+}
+
+.input-text {
+    border-bottom: 2px solid #fffa;
+    border-radius: 0;
+}
+
+.input-text::placeholder {
+    color: #fff8;
+}
+
+.input-check {
+    font-size: 18px;
+}
+
+.input-check input[type=checkbox], .input-check input[type=radio] {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+}
+
+.submit {
+    text-align: center;
+    margin-top: 30px;
+    border: 2px solid #fffa;
+    border-radius: 5px;
+}
+
+#show-add-swimmer {
+    border-radius: 10px;
+    border: 2px dashed #fffa;
+    padding: 10px;
 }

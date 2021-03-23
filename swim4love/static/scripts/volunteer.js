@@ -1,12 +1,8 @@
 /**
- * A large portion of this code is copied from <https://github.com/serratus/quaggaJS/blob/master/example/live_w_locator.js>
+ * Common code for volunteer & admin management
  */
 
-if (!Cookies.get('swimmers')) {
-    Cookies.set('swimmers', []);
-}
-
-var idsToNames = {};
+var swimmers = {};
 
 // var isCameraOn = false;
 
@@ -75,60 +71,188 @@ var idsToNames = {};
 //             console.log(`Detected swimmer #${id}, but the camera has already detected something else`)
 //             return;
 //         }
-//         // We set it to false beforehand to prevent
-//         // multiple onDetected called in a very short interval
-//         // and since updateNameFromServer takes time
-//         isCameraOn = false;
+
 //         var id = result.codeResult.code.toString();
-//         updateNameFromServer(id).done(result => {
-//             if (result.code === 0) {
-//                 // The scanned swimmer is on the list of swimmers on the server
-//                 Quagga.stop();
-//                 $('#barcode-scanner').hide();
-//                 addSwimmer(id);
-//             } else {
-//                 // Something was scanned from the webcam that is not on the swimmers list on the server
-//                 // TD, visual error message
-//                 alert(`游泳者#${id}没有登记`)
-//                 isCameraOn = true;
-//             }
-//         });
+//         if (isValidId(id)) {
+//             // We set it to false beforehand to prevent
+//             // multiple onDetected called in a very short interval
+//             // and since linkSwimmer takes time
+//             isCameraOn = false;
+//             linkSwimmer(id, true).done(result => {
+//                 if (result.code === 0) {
+//                     // The scanned swimmer is added
+//                     Quagga.stop();
+//                     $('#barcode-scanner').hide();
+//                 } else {
+//                     // Something was scanned from the webcam that is not on the swimmers list on the server
+//                     isCameraOn = true;
+//                 }
+//             });
+//         }
 //     });
 // }
 
-function addSwimmer(id) {
-    // This function temporarily allows IDs that are not on server,
-    // since checking if they are on server takes time and is asynchronous,
-    // and updateSwimmersListFromCookies checks if the ID is on the server anyways
-    if (!isValidId(id)) {
-        // TODO, visual error message
-        alert(id + ' 格式不正确');
-        return;
-    }
-    console.log(`Added swimmer #${id}`);
-    // Normally, id won't be in getSwimmers
-    // But just in case it is, we bring it to the top of the list to show the volunteer
-    var swimmers = getSwimmers().filter(idFromCookies => idFromCookies !== id);
-    swimmers.unshift(id);
-    setSwimmers(swimmers);
-
-    updateSwimmersListFromCookies();
-    hideAddSwimmerDiv();
+function post(url, payload, callback) {
+    return $.post(url, payload, 'json').done(response => {
+        if (response.code === 0) {
+            callback(response.data);
+        } else {
+            alert(response.msg);
+        }
+    }).fail(() => {
+        alert('网络错误，请重试');
+    });
 }
 
-function updateNameFromServer(id) {
-    return $.getJSON(`/swimmer/info/${id}`).done(response => {
-        var code = response.code;
-        if (code === 0) {
-            idsToNames[id] = response.data.name;
-        } else if (id in idsToNames) {
-            delete idsToNames[id];
-        }
+function linkSwimmer(id) {
+    return post('/volunteer/link-swimmer', {id: id}, data => {
+        console.log(`Linked swimmer #${id}`);
+        swimmers[id] = data;
+        updateSwimmers();
+    }).always(() => {
+        hideLinkSwimmerDiv();
+    });
+}
+
+function unlinkSwimmer(id) {
+    return post('/volunteer/unlink-swimmer', {id: id}, () => {
+        console.log(`Unlinked swimmer #${id}`);
+        delete swimmers[id];
+        updateSwimmers();
+    });
+}
+
+function addSwimmer(id, name) {
+    return post('/swimmer/add', {id: id, name: name}, data => {
+        console.log(`Added new swimmer #${id}`);
+        swimmers[id] = data;
+        updateSwimmers();
+    }).always(() => {
+        hideAddSwimmerDiv();
+    });
+}
+
+function deleteSwimmer(id) {
+    return post('/swimmer/delete', {id: id}, () => {
+        console.log(`Deleted swimmer #${id}`);
+        delete swimmers[id];
+        updateSwimmers();
+    })
+}
+
+function updateName(id, name) {
+    return post('/swimmer/update-name', {id: id, name: name}, data => {
+        console.log(`Updated swimmer #${id} name to ${name}`);
+        swimmers[id] = data;
+        updateSwimmers();
+    }).always(() => {
+        hideUpdateSwimmerDiv();
     });
 }
 
 function isValidId(id) {
     return /^[0-9][0-9][0-9]$/.test(id);
+}
+
+function updateSwimmer(id, data) {
+    $(`#swimmer-${id} .swimmer-name`).text(data.name);
+    $(`#swimmer-${id} .swimmer-lap-count`).text(data.laps + ' 圈');
+}
+
+function updateSwimmers() {
+    $('#swimmers-list').html('');
+    // Each button is ~35px wide; admin has an additional edit button
+    const buttonsWidth = 35 * (admin ? 4 : 3);
+    for (const id in swimmers) {
+        var $swimmerItem = $('<div>').attr('id', `swimmer-${id}`).addClass('swimmer-item');
+        var $swimmerNameItem = $('<div>').css('width', `calc(100% - ${buttonsWidth}px)`).appendTo($swimmerItem);
+        $('<p>').html('#' + id).addClass('swimmer-id').appendTo($swimmerNameItem);
+        $('<p>').addClass('swimmer-name').appendTo($swimmerNameItem);
+        $('<p>').addClass('swimmer-lap-count').appendTo($swimmerNameItem);
+
+        var $swimmerButtonsItem = $('<div>').width(buttonsWidth).appendTo($swimmerItem);
+
+        if (admin) {
+            $('<span>').addClass('swimmer-button fas fa-trash-alt').appendTo($swimmerButtonsItem).click(() => {
+                if (confirm(`确定删除游泳者#${id}吗？`)) {
+                    deleteSwimmer(id);
+                }
+            });
+        } else {
+            $('<span>').addClass('swimmer-button fas fa-unlink').appendTo($swimmerButtonsItem).click(() => {
+                if (confirm(`确定与游泳者#${id}取消关联吗？`)) {
+                    unlinkSwimmer(id);
+                }
+            });
+        }
+
+        $('<span>').addClass('swimmer-button fas fa-minus').appendTo($swimmerButtonsItem).click(() => {
+            post('/swimmer/sub-lap', {id: id}, data => {
+                console.log(`1 lap subtracted from swimmer #${id}`);
+                updateSwimmer(id, data);
+            });
+        });
+
+        $('<span>').addClass('swimmer-button fas fa-plus').appendTo($swimmerButtonsItem).click(() => {
+            post('/swimmer/add-lap', {id: id}, data => {
+                console.log(`1 lap added to swimmer #${id}`);
+                updateSwimmer(id, data);
+            });
+        });
+
+        if (admin) {
+            $('<span>').addClass('swimmer-button fas fa-pen').appendTo($swimmerButtonsItem).click(() => {
+                showUpdateSwimmerDiv(id);
+            });
+        }
+
+        $swimmerItem.appendTo('#swimmers-list');
+
+        updateSwimmer(id, swimmers[id]);
+    }
+}
+
+function inputNext(next) {
+    $('#' + next).focus();
+}
+
+function submitLinkSwimmer() {
+    const inputId = $('.input-digit').toArray().map(e => $(e).val()).join('');
+    if (isValidId(inputId)) {
+        linkSwimmer(inputId);
+    }
+}
+
+function submitAddSwimmer(event) {
+    const inputId = $('.input-digit').toArray().map(e => $(e).val()).join('');
+    const name = $('#add-swimmer-name').val();
+    if (isValidId(inputId)) {
+        addSwimmer(inputId, name);
+    }
+    event.preventDefault();
+}
+
+function submitUpdateSwimmer(event) {
+    const name = $('#update-swimmer-name').val();
+    const id = $('#update-swimmer-id').val();
+    updateName(id, name);
+    event.preventDefault();
+}
+
+function showLinkSwimmerDiv() {
+    // startCamera();
+    $('#link-swimmer').show();
+    $('#swimmers').hide();
+    $('.input-digit#1').focus();
+}
+
+function hideLinkSwimmerDiv() {
+    // isCameraOn = false;
+    // Quagga.stop();
+    // $('#barcode-scanner').hide();
+    $('#link-swimmer').hide();
+    $('#swimmers').show();
+    $('.input-digit').val('');
 }
 
 function showAddSwimmerDiv() {
@@ -147,89 +271,45 @@ function hideAddSwimmerDiv() {
     $('.input-digit').val('');
 }
 
-function updateLaps(id) {
-    return updateNameFromServer(id).done(response => {
-        $(`#swimmer-${id} .swimmer-lap-count`).html(response.data.laps + ' 圈');
-    });
+function showUpdateSwimmerDiv(id) {
+    $('#update-swimmer').show();
+    $('#swimmers').hide();
+    $('#update-swimmer-id').val(id);
+    $('#update-swimmer-name').focus();
 }
 
-function appendSwimmerToList(id) {
-    var $swimmerItem = $('<div>').attr('id', `swimmer-${id}`).addClass('swimmer-item');
-    var $swimmerNameItem = $('<div>').css('width', 'calc(80% - 115px)').appendTo($swimmerItem);
-    $('<p>').html('#' + id).addClass('swimmer-id').appendTo($swimmerNameItem);
-    $('<p>').html(idsToNames[id]).addClass('swimmer-name').appendTo($swimmerNameItem);
-    $('<p>').addClass('swimmer-lap-count').appendTo($swimmerNameItem);
-    updateLaps(id);
-    var $swimmerButtonsItem = $('<div>').width(105).appendTo($swimmerItem);
-    $('<span>').addClass('swimmer-button fas fa-trash-alt').appendTo($swimmerButtonsItem).click(() => {
-        if (confirm(`确定删除游泳者#${id}？`)) {
-            setSwimmers(getSwimmers().filter(idFromCookies => idFromCookies !== id));
-            updateSwimmersListFromCookies();
-        }
-    });
-    $('<span>').addClass('swimmer-button fas fa-minus').appendTo($swimmerButtonsItem).click(() => {
-        $.post('/swimmer/sub-lap', {id: id}, () => {
-            console.log(`1 lap subtracted from swimmer #${id}`);
-        }).done(() => updateLaps(id));
-    });
-    $('<span>').addClass('swimmer-button fas fa-plus').appendTo($swimmerButtonsItem).click(() => {
-        $.post('/swimmer/add-lap', {id: id}, () => {
-            console.log(`1 lap added to swimmer #${id}`);
-        }).done(() => updateLaps(id));
-    });
-    $swimmerItem.appendTo('#swimmers-list');
-}
-
-function updateSwimmersListFromCookies() {
-    $('#swimmers-list').html('');
-    var swimmers = getSwimmers().reverse();
-    swimmers.forEach(id => {
-        // appendSwimmerToList requires id to be in idsToNames
-        if (id in idsToNames) {
-            appendSwimmerToList(id);
-        } else {
-            updateNameFromServer(id).done(result => {
-                if (result.code === 0) {
-                    // updateNameFromServer will put id: name into idsToNames
-                    appendSwimmerToList(id);
-                } else {
-                    swimmers.splice(swimmers.indexOf(id), 1);
-                    setSwimmers(swimmers);
-                    // TODO, visual error message
-                    alert(`游泳者#${id}没有登记`)
-                }
-            });
-        }
-    })
-}
-
-function getSwimmers() {
-    return JSON.parse(Cookies.get('swimmers'));
-}
-
-function setSwimmers(swimmersList) {
-    // js-cookie automatically converts arrays / objects to URL-encoded JSONified strings
-    return Cookies.set('swimmers', swimmersList, {expires: 7, path: '/'});
-}
-
-function inputNext(next) {
-    $('#' + next).focus();
-}
-
-function autoValidateId() {
-    var inputId = $('.input-digit').toArray().map(e => $(e).val()).join('');
-    if (isValidId(inputId)) {
-        addSwimmer(inputId);
-        $('.input-digit').val('');
-        $('.input-digit#3').focus();
-    }
+function hideUpdateSwimmerDiv() {
+    $('#update-swimmer').hide();
+    $('#swimmers').show();
+    $('#update-swimmer-name').val('');
 }
 
 $(document).ready(() => {
     $.ajaxSetup({cache: false});
 
-    $('#show-add-swimmer').click(showAddSwimmerDiv);
-    $('#add-swimmer-back').click(hideAddSwimmerDiv);
+    if (admin) {
+        $('#show-add-swimmer').click(showAddSwimmerDiv);
+        $('#add-swimmer-back').click(hideAddSwimmerDiv);
+        $('#add-swimmer').submit(submitAddSwimmer);
 
-    updateSwimmersListFromCookies();
+        $('#update-swimmer-back').click(hideUpdateSwimmerDiv);
+        $('#update-swimmer').submit(submitUpdateSwimmer);
+
+        $.getJSON('/swimmer/all').done(response => {
+            for (const id in response.data) {
+                swimmers[id.toString().padStart(3, '0')] = response.data[id];
+            }
+            updateSwimmers();
+        });
+    } else {
+        $('#show-link-swimmer').click(showLinkSwimmerDiv);
+        $('#link-swimmer-back').click(hideLinkSwimmerDiv);
+
+        $.getJSON('/volunteer/swimmers').done(response => {
+            for (const id in response.data) {
+                swimmers[id.toString().padStart(3, '0')] = response.data[id];
+            }
+            updateSwimmers();
+        });
+    }
 });

@@ -17,6 +17,7 @@ class DevelopmentConfig(Config):
     ENV = 'development'
     TESTING = True
     DEBUG = True
+    JSONIFY_PRETTYPRINT_REGULAR = True
     SQLALCHEMY_ECHO = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
@@ -25,10 +26,18 @@ class ProductionConfig(Config):
     '''Production configurations.'''
 
     ENV = 'production'
-    TESTING = True
-    DEBUG = True
+    TESTING = False
+    DEBUG = False
+    JSONIFY_PRETTYPRINT_REGULAR = False
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+if not os.path.isfile('instance/secrets.py'):
+    print('No secret key file (instance/secrets.py) detected. Auto-generating...')
+    os.makedirs('instance', exist_ok=True)
+    with open('instance/secrets.py', 'w') as file:
+        file.write('SECRET_KEY = {!r}\n'.format(os.urandom(24)))
 
 
 app_config = {

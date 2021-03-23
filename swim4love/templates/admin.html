@@ -13,33 +13,46 @@
   <script type="text/javascript" src="/static/vendors/js.cookie.min.js"></script>
   <link rel="stylesheet" href="/static/vendors/fontawesome/css/all.css">
   <link rel="stylesheet" href="/static/styles/volunteer.css">
-  <title>志愿者 | 为爱畅游</title>
+  <title>管理员 | 为爱畅游</title>
 </head>
 <body>
   <div id="page-container">
-    <div id="link-swimmer" style="display: none;">
-      <p id="link-swimmer-back"><span class="fas fa-caret-left"></span>&nbsp;返回</p>
+    <form id="add-swimmer" style="display: none;">
+      <p id="add-swimmer-back"><span class="fas fa-caret-left"></span>&nbsp;返回</p>
       <strong class="msg">输入游泳者 3 位编号：</strong>
       <table id='input-digits-container'>
         <tr>
           <td><input id="1" class="input-digit" type="number" pattern="[0-9]*" maxlength="1" oninput="inputNext(2)"></td>
           <td><input id="2" class="input-digit" type="number" pattern="[0-9]*" maxlength="1" oninput="inputNext(3)"></td>
-          <td><input id="3" class="input-digit" type="number" pattern="[0-9]*" maxlength="1" oninput="submitLinkSwimmer()"></td>
+          <td><input id="3" class="input-digit" type="number" pattern="[0-9]*" maxlength="1" oninput="inputNext('add-swimmer-name')"></td>
         </tr>
       </table>
       <!-- <br />
       或扫描条形码：<div id="barcode-scanner" style="display: none;"></div> -->
-    </div>
+      <strong class="msg">输入游泳者姓名：</strong>
+      <input id="add-swimmer-name" class="input input-text" type="text" placeholder="例：张明 Ming Zhang" autocomplete="off">
+      <input type="submit" class="input submit" value="登记">
+    </form>
+    <form id="update-swimmer" style="display: none;">
+      <p id="update-swimmer-back"><span class="fas fa-caret-left"></span>&nbsp;返回</p>
+      <strong class="msg">输入游泳者姓名：</strong>
+      <input id="update-swimmer-name" class="input input-text" type="text" placeholder="例：张明 Ming Zhang" autocomplete="off">
+      <input id="update-swimmer-id" type="hidden" value="">
+      <input type="submit" class="input submit" value="更改姓名">
+    </form>
     <div id="swimmers">
       <img id="logo" src="/static/images/event-logo.svg">
-      <h1>游泳者<span id='show-link-swimmer' class='fas fa-plus-square'></span></h1>
+      <h1>管理游泳者</h1>
       <hr />
       <div id="swimmers-list"></div>
+      <div id="show-add-swimmer">
+        <span class="fas fa-plus-square"></span>&nbsp;登记新游泳者
+      </div>
     </div>
   </div>
+  <script type="text/javascript">
+    var admin = true;
+  </script>
+  <script type="text/javascript" src="/static/scripts/volunteer.js"></script>
 </body>
-<script type="text/javascript">
-  var admin = false;
-</script>
-<script type="text/javascript" src="/static/scripts/volunteer.js"></script>
 </html>

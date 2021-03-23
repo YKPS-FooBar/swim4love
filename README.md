@@ -14,7 +14,7 @@ in shell to download the code and install prerequisites.
 ## Development Run
 Run
 ```sh
-FLASK_ENV=development python run.py <port>
+S4L_ENV=development python run.py <port>
 ```
 
 ## Production Run
@@ -25,7 +25,7 @@ python run.py <port>
 
 Eventlet is automatically used.
 
-Don't use gunicorn multiple workers since it is [not supported by Flask-SocketIO](https://flask-socketio.readthedocs.io/en/latest/#gunicorn-web-server).
+Don't use gunicorn multiple workers since it is [not supported by Flask-SocketIO](https://flask-socketio.readthedocs.io/en/latest/#gunicorn-web-server). If using single-worker gunicorn, enable `--worker-class eventlet`.
 
 ## Clean data
 The code produces cache and databases storing names of swimmers, etc. To clean them, run

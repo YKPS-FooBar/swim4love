@@ -69,11 +69,15 @@ function update_leaderboard() {
     });
     topTen.forEach((e, i) => {
         let id = e.id;
+        let name = e.name;
         let laps = e.laps;
         if (!leaderboardIds.includes(id)) { // a new player
             insert_player(e, null, i, false);
             return;
         }
+
+        // in case the name changes mid-event
+        $(`#${id} .name`).text(name);
 
         if (laps !== previousData[id]) {
             change_number($(`#${id} .laps`), laps);

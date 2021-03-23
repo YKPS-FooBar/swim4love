@@ -2,16 +2,22 @@ import re
 import sys
 import traceback
 from functools import wraps
+from urllib.parse import urlparse, urljoin
 
-from flask import jsonify
+from flask import jsonify, request, abort
+from flask_login import current_user
 
+from swim4love import login_manager
 from swim4love.site_config import SWIMMER_ID_LENGTH
+from swim4love.models import Swimmer
 
 
 ERRORS = {
-    1: 'Invalid swimmer ID',
-    2: 'Swimmer ID already exists',
-    3: 'Swimmer does not exist',
+    1: '游泳者ID#{}格式不正确',
+    2: '游泳者ID#{}已存在',
+    3: '游泳者ID#{}没有登记',
+    4: '请求格式不正确',
+    5: '游泳者#{}的圈数不能再减啦',
 }
 
 
@@ -49,9 +55,46 @@ def is_valid_id(swimmer_id):
     return re.fullmatch(r'[0-9]' * SWIMMER_ID_LENGTH, swimmer_id)
 
 
-def get_error_json(error_code: int):
+def get_error_json(error_code: int, swimmer_id):
     '''
     Returns the jsonified version of an error based on the error_code.
     '''
-    msg = ERRORS.get(error_code, 'Unknown error')
+    msg = ERRORS.get(error_code, '未知错误').format(swimmer_id)
     return jsonify({'code': error_code, 'msg': msg})
+
+
+def admin_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not current_user.is_authenticated or not current_user.is_admin:
+            return login_manager.unauthorized()
+        return func(*args, **kwargs)
+    return wrapper
+
+
+def is_safe_url(target):
+    """Test if the target redirection URL is of the same domain as the host URL"""
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
+
+def get_swimmer(swimmer_id):
+    """Returns swimmer from the database."""
+    if not is_valid_id(swimmer_id):
+        abort(get_error_json(1, swimmer_id))
+    swimmer = Swimmer.query.get(int(swimmer_id))
+    if not swimmer:
+        abort(get_error_json(3, swimmer_id))
+    return swimmer
+
+
+def get_swimmer_data(swimmer):
+    """Fetch swimmer information"""
+    # TODO(thomas): this should be changed to also include swim time & year group
+    return {'id': swimmer.id, 'name': swimmer.name, 'laps': swimmer.laps}
+
+
+def get_swimmers_data():
+    return {swimmer.id: get_swimmer_data(swimmer)
+            for swimmer in Swimmer.query.all()}

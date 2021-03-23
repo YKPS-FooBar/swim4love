@@ -4,6 +4,7 @@ SQLAlchemy<1.4.0  # Compatible with Flask-SQLAlchemy
 flask-socketio
 Flask-Caching
 Flask-Cors
+flask-login
 
 # Production-ready WebSocket support
 eventlet
