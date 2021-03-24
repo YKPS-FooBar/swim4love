@@ -18,7 +18,10 @@ p {
     margin: 0;
 }
 
-.submit, .swimmer-button, #show-link-swimmer, #show-add-swimmer, #admin-refresh {
+.submit, .swimmer-button,
+#show-link-swimmer, #show-add-swimmer,
+#link-swimmer-back, #add-swimmer-back,
+#admin-refresh {
     cursor: pointer;
 }
 
