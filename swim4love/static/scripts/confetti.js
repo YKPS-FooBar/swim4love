@@ -90,7 +90,7 @@ function Draw() {
 
         setTimeout(function() {
             done = true;
-        }, CONFETTI_TIMEOUT);
+        }, ACHIEVEMENT_CONFETTI_TIMEOUT);
 
     }
     return results;

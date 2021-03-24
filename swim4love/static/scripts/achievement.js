@@ -1,5 +1,5 @@
 let currentLaps = 0;
-function set_stat(element, to, span=8000) {
+function set_stat(element, to, span=ACHIEVEMENT_SET_STAT_TIMEOUT) {
     let current = parseInt(element.text());
     if (current === to) return;
     element.prop('counter', current).animate({counter: to}, {

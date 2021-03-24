@@ -276,7 +276,7 @@ function showUpdateSwimmerDiv(id) {
     $('#update-swimmer').show();
     $('#swimmers').hide();
     $('#update-swimmer-id').val(id);
-    $('#update-swimmer-name').focus();
+    $('#update-swimmer-name').val(swimmers[id].name).focus();
 }
 
 function hideUpdateSwimmerDiv() {
