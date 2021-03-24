@@ -16,7 +16,7 @@
 <body>
   <div id="page-container">
     <form id="add-swimmer" style="display: none;">
-      <p id="add-swimmer-back"><span class="fas fa-caret-left"></span>&nbsp;返回</p>
+      <p id="add-swimmer-back"><i class="fas fa-caret-left"></i> 返回</p>
       <strong class="msg">输入游泳者 3 位编号：</strong>
       <table id='input-digits-container'>
         <tr>
@@ -28,35 +28,51 @@
       <!-- <br />
       或扫描条形码：<div id="barcode-scanner" style="display: none;"></div> -->
       <strong class="msg">输入游泳者姓名：</strong>
-      <input id="add-swimmer-name" class="input input-text" type="text" placeholder="例：张明 Ming Zhang" autocomplete="off">
+      <input id="add-swimmer-name" class="input input-text" type="text" placeholder="例：张明 Ming Zhang" autocomplete="off" required>
       <input type="submit" class="input submit" value="登记">
     </form>
+
     <form id="update-swimmer" style="display: none;">
-      <p id="update-swimmer-back"><span class="fas fa-caret-left"></span>&nbsp;返回</p>
+      <p id="update-swimmer-back"><i class="fas fa-caret-left"></i> 返回</p>
       <strong class="msg">输入游泳者姓名：</strong>
-      <input id="update-swimmer-name" class="input input-text" type="text" placeholder="例：张明 Ming Zhang" autocomplete="off">
+      <input id="update-swimmer-name" class="input input-text" type="text" placeholder="例：张明 Ming Zhang" autocomplete="off" required>
       <input id="update-swimmer-id" type="hidden" value="">
       <input type="submit" class="input submit" value="更改姓名">
     </form>
+
+    <form id="add-volunteer" style="display: none;">
+      <p id="add-volunteer-back"><i class="fas fa-caret-left"></i> 返回</p>
+      <strong class="msg">输入志愿者信息：</strong>
+      <input id="add-volunteer-username" class="input input-text" type="text" placeholder="用户名" autocomplete="off" required>
+      <input id="add-volunteer-password" class="input input-text" type="password" placeholder="密码" required>
+      <div class="input input-check">
+        <input id="add-volunteer-is-admin" type="checkbox" name="is-admin">
+        <label for="add-volunteer-is-admin">管理者权限</label>
+      </div>
+      <input type="submit" class="input submit" value="添加志愿者">
+    </form>
+
     <div id="swimmers">
       <div id="header">
         <a href="/"><img id="logo" src="/static/images/event-logo.svg"></a>
         <a href="/logout">登出 <i class="fas fa-sign-out-alt"></i></a>
       </div>
 
-      <h1>管理游泳者 <span id="admin-refresh" class="fas fa-sync-alt"></span></h1>
+      <h1>管理游泳者 <i id="admin-refresh" class="fas fa-sync-alt"></i></h1>
       <hr />
       <div id="swimmers-list"></div>
       <div id="show-add-swimmer" class="dashed-border-button">
-        <span class="fas fa-plus-square"></span>&nbsp;登记新游泳者
+        <i class="fas fa-plus-square"></i> 登记新游泳者
       </div>
 
       <h1>管理志愿者</h1>
       <hr />
-      <div id="manage-users">
-        <a href="/register" class="dashed-border-button"><i class="fas fa-user-plus"></i> 添加</a>
-        <a href="/delete-volunteer" class="dashed-border-button"><i class="fas fa-user-minus"></i> 删除</a>
-      </div>
+      <div id="volunteers-list"></div>
+      <!-- <a href="/register"> -->
+        <div id="show-add-volunteer" class="dashed-border-button">
+          <i class="fas fa-user-plus"></i> 添加志愿者
+        </div>
+      <!-- </a> -->
     </div>
   </div>
   <script type="text/javascript">

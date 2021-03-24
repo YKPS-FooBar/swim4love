@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from swim4love import app, db, login_manager, socketio
 from swim4love.models import Swimmer, Volunteer
-from swim4love.helper import is_valid_id, get_error_json, admin_required, is_safe_url, get_swimmer, get_swimmer_data, get_swimmers_data
+from swim4love.helper import is_valid_id, get_error_json, admin_required, is_safe_url, get_swimmer, get_swimmer_data, get_swimmers_data, get_volunteer, get_volunteer_data, get_volunteers_data
 from swim4love.site_config import *
 
 
@@ -75,11 +75,11 @@ def add_new_swimmer():
 
     # Validate
     if not swimmer_id or not swimmer_name:
-        abort(get_error_json(4, swimmer_id));
+        abort(get_error_json(4, swimmer_id))
     if not is_valid_id(swimmer_id):
-        abort(get_error_json(1, swimmer_id));
+        abort(get_error_json(1, swimmer_id))
     if Swimmer.query.get(int(swimmer_id)):
-        abort(get_error_json(2, swimmer_id));
+        abort(get_error_json(2, swimmer_id))
 
     # Add swimmer into database
     swimmer = Swimmer(id=int(swimmer_id), name=swimmer_name, laps=0)
@@ -167,6 +167,49 @@ def volunteer_unlink_swimmer():
     return jsonify({'code': 0, 'msg': 'Success'})
 
 
+@app.route('/volunteer/add', methods=['POST'])
+@admin_required
+def add_new_volunteer():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    is_admin = request.form.get('is-admin') == 'true'
+
+    if not username or not password:
+        abort(get_error_json(4, username))
+    if Volunteer.query.filter_by(username=username).first():
+        abort(get_error_json(7, username))
+
+    volunteer = Volunteer(username=username,
+                          password=generate_password_hash(password, method='sha256'),
+                          is_admin=is_admin)
+    db.session.add(volunteer)
+    db.session.commit()
+
+    data = get_volunteer_data(volunteer)
+    return jsonify({'code': 0, 'msg': 'Success', 'data': data})
+
+
+@app.route('/volunteer/delete', methods=['POST'])
+@admin_required
+def delete_volunteer():
+    username = request.form.get('username')
+
+    # Validation
+    volunteer = get_volunteer(username)
+
+    Volunteer.query.filter_by(username=username).delete()
+    db.session.commit()
+
+    return jsonify({'code': 0, 'msg': 'Success'})
+
+
+@app.route('/volunteer/all')
+@admin_required
+def get_all_volunteers():
+    data = get_volunteers_data()
+    return jsonify({'code': 0, 'msg': 'Success', 'data': data})
+
+
 ##################### SocketIO #####################
 
 
@@ -221,51 +264,6 @@ def login():
         return redirect(next)
     else:
         return redirect(url_for('index'))
-
-
-@app.route('/register', methods=['GET', 'POST'])
-@admin_required
-def register():
-    if request.method == 'GET':
-        return render_template('volunteer/register.html')
-
-    username = request.form.get('username')
-    password = request.form.get('password')
-    is_admin = request.form.get('is-admin') == 'on'
-
-    if Volunteer.query.filter_by(username=username).first():
-        flash('用户名已存在')
-        return render_template('volunteer/register.html')
-
-    user = Volunteer(username=username,
-                     password=generate_password_hash(password, method='sha256'),
-                     is_admin=is_admin)
-    db.session.add(user)
-    db.session.commit()
-
-    flash('用户注册成功', 'success')
-    return render_template('volunteer/register.html')
-
-
-@app.route('/delete-volunteer', methods=['GET', 'POST'])
-@admin_required
-def delete_volunteer():
-    if request.method == 'GET':
-        return render_template('volunteer/delete_volunteer.html')
-
-    username = request.form.get('username')
-
-    filtered = Volunteer.query.filter_by(username=username)
-
-    if not filtered.first():
-        flash('用户名不存在')
-        return render_template('volunteer/delete_volunteer.html')
-
-    filtered.delete()
-    db.session.commit()
-
-    flash('用户删除成功', 'success')
-    return render_template('volunteer/delete_volunteer.html')
 
 
 @app.route('/logout')

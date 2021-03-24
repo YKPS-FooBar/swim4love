@@ -3,6 +3,7 @@
  */
 
 var swimmers = {};
+var volunteers = {};
 
 // var isCameraOn = false;
 
@@ -144,9 +145,27 @@ function updateName(id, name) {
     return post('/swimmer/update-name', {id: id, name: name}, data => {
         console.log(`Updated swimmer #${id} name to ${name}`);
         swimmers[id] = data;
-        updateSwimmers();
+        updateSwimmer(id);
     }).always(() => {
         hideUpdateSwimmerDiv();
+    });
+}
+
+function deleteVolunteer(username) {
+    return post('/volunteer/delete', {username: username}, () => {
+        console.log(`Deleted volunteer ${username}`);
+        delete volunteers[username];
+        updateVolunteers();
+    });
+}
+
+function addVolunteer(username, password, isAdmin) {
+    return post('/volunteer/add', {username: username, password: password, 'is-admin': isAdmin}, data => {
+        console.log(`Added volunteer ${username}`);
+        volunteers[username] = data;
+        updateVolunteers();
+    }).always(() => {
+        hideAddVolunteerDiv();
     });
 }
 
@@ -154,61 +173,81 @@ function isValidId(id) {
     return /^[0-9][0-9][0-9]$/.test(id);
 }
 
-function updateSwimmer(id, data) {
-    $(`#swimmer-${id} .swimmer-name`).text(data.name);
-    $(`#swimmer-${id} .swimmer-lap-count`).text(data.laps + ' 圈');
+function updateSwimmer(id) {
+    const data = swimmers[id];
+    $(`#swimmer-${id} .list-item-name`).text(data.name);
+    $(`#swimmer-${id} .list-item-lap-count`).text(data.laps + ' 圈');
 }
 
 function updateSwimmers() {
     $('#swimmers-list').html('');
-    // Each button is ~35px wide; admin has an additional edit button
-    const buttonsWidth = 35 * (admin ? 4 : 3);
-    for (const id in swimmers) {
-        var $swimmerItem = $('<div>').attr('id', `swimmer-${id}`).addClass('swimmer-item');
-        var $swimmerNameItem = $('<div>').css('width', `calc(100% - ${buttonsWidth}px)`).appendTo($swimmerItem);
-        $('<p>').html('#' + id).addClass('swimmer-id').appendTo($swimmerNameItem);
-        $('<p>').addClass('swimmer-name').appendTo($swimmerNameItem);
-        $('<p>').addClass('swimmer-lap-count').appendTo($swimmerNameItem);
+    for (const id of Object.keys(swimmers).sort()) {
+        var $swimmerItem = $('<div>').attr('id', `swimmer-${id}`).addClass('list-item');
+        var $swimmerNameItem = $('<div>').css('flex-grow', '1').appendTo($swimmerItem);
+        $('<p>').html('#' + id).addClass('list-item-id').appendTo($swimmerNameItem);
+        $('<p>').addClass('list-item-name').appendTo($swimmerNameItem);
+        $('<p>').addClass('list-item-lap-count').appendTo($swimmerNameItem);
 
-        var $swimmerButtonsItem = $('<div>').width(buttonsWidth).appendTo($swimmerItem);
+        var $swimmerButtonsItem = $('<div>').appendTo($swimmerItem);
 
         if (admin) {
-            $('<span>').addClass('swimmer-button fas fa-trash-alt').appendTo($swimmerButtonsItem).click(() => {
+            $('<span>').addClass('list-item-button fas fa-pen').appendTo($swimmerButtonsItem).click(() => {
+                showUpdateSwimmerDiv(id);
+            });
+        }
+
+        $('<span>').addClass('list-item-button fas fa-plus').appendTo($swimmerButtonsItem).click(() => {
+            post('/swimmer/add-lap', {id: id}, data => {
+                console.log(`1 lap added to swimmer #${id}`);
+                swimmers[id] = data;
+                updateSwimmer(id);
+            });
+        });
+
+        $('<span>').addClass('list-item-button fas fa-minus').appendTo($swimmerButtonsItem).click(() => {
+            post('/swimmer/sub-lap', {id: id}, data => {
+                console.log(`1 lap subtracted from swimmer #${id}`);
+                swimmers[id] = data;
+                updateSwimmer(id);
+            });
+        });
+
+        if (admin) {
+            $('<span>').addClass('list-item-button fas fa-trash-alt').appendTo($swimmerButtonsItem).click(() => {
                 if (confirm(`确定删除游泳者#${id}吗？`)) {
                     deleteSwimmer(id);
                 }
             });
         } else {
-            $('<span>').addClass('swimmer-button fas fa-unlink').appendTo($swimmerButtonsItem).click(() => {
+            $('<span>').addClass('list-item-button fas fa-unlink').appendTo($swimmerButtonsItem).click(() => {
                 if (confirm(`确定与游泳者#${id}取消关联吗？`)) {
                     unlinkSwimmer(id);
                 }
             });
         }
 
-        $('<span>').addClass('swimmer-button fas fa-minus').appendTo($swimmerButtonsItem).click(() => {
-            post('/swimmer/sub-lap', {id: id}, data => {
-                console.log(`1 lap subtracted from swimmer #${id}`);
-                updateSwimmer(id, data);
-            });
-        });
-
-        $('<span>').addClass('swimmer-button fas fa-plus').appendTo($swimmerButtonsItem).click(() => {
-            post('/swimmer/add-lap', {id: id}, data => {
-                console.log(`1 lap added to swimmer #${id}`);
-                updateSwimmer(id, data);
-            });
-        });
-
-        if (admin) {
-            $('<span>').addClass('swimmer-button fas fa-pen').appendTo($swimmerButtonsItem).click(() => {
-                showUpdateSwimmerDiv(id);
-            });
-        }
-
         $swimmerItem.appendTo('#swimmers-list');
 
-        updateSwimmer(id, swimmers[id]);
+        updateSwimmer(id);
+    }
+}
+
+function updateVolunteers() {
+    $('#volunteers-list').html('');
+    for (const username of Object.keys(volunteers).sort()) {
+        var $volunteerItem = $('<div>').attr('id', `volunteer-${username}`).addClass('list-item');
+        var $volunteerNameItem = $('<div>').css('flex-grow', '1').appendTo($volunteerItem);
+        $('<p>').addClass('list-item-name').text(username).css('font-weight', volunteers[username].isAdmin ? '600' : '400').appendTo($volunteerNameItem);
+
+        var $volunteerButtonsItem = $('<div>').appendTo($volunteerItem);
+
+        $('<span>').addClass('list-item-button fas fa-user-minus').appendTo($volunteerButtonsItem).click(() => {
+            if (confirm(`确定删除志愿者 ${username} 吗？`)) {
+                deleteVolunteer(username);
+            }
+        });
+
+        $volunteerItem.appendTo('#volunteers-list');
     }
 }
 
@@ -236,6 +275,14 @@ function submitUpdateSwimmer(event) {
     const name = $('#update-swimmer-name').val();
     const id = $('#update-swimmer-id').val();
     updateName(id, name);
+    event.preventDefault();
+}
+
+function submitAddVolunteer(event) {
+    const username = $('#add-volunteer-username').val();
+    const password = $('#add-volunteer-password').val();
+    const isAdmin = $('#add-volunteer-is-admin').prop('checked');
+    addVolunteer(username, password, isAdmin);
     event.preventDefault();
 }
 
@@ -285,6 +332,20 @@ function hideUpdateSwimmerDiv() {
     $('#update-swimmer-name').val('');
 }
 
+function showAddVolunteerDiv() {
+    $('#add-volunteer').show();
+    $('#swimmers').hide();
+    $('#add-volunteer-username').focus();
+}
+
+function hideAddVolunteerDiv() {
+    $('#add-volunteer').hide();
+    $('#swimmers').show();
+    $('#add-volunteer-username').val('');
+    $('#add-volunteer-password').val('');
+    $('#add-volunteer-is-admin').prop('checked', false);
+}
+
 function syncSwimmers() {
     if (admin) {
         $.getJSON('/swimmer/all').done(response => {
@@ -293,6 +354,12 @@ function syncSwimmers() {
             }
             updateSwimmers();
         });
+        $.getJSON('/volunteer/all').done(response => {
+            for (const username in response.data) {
+                volunteers[username] = response.data[username];
+            }
+            updateVolunteers();
+        })
     } else {
         $.getJSON('/volunteer/swimmers').done(response => {
             for (const id in response.data) {
@@ -313,6 +380,10 @@ $(document).ready(() => {
 
         $('#update-swimmer-back').click(hideUpdateSwimmerDiv);
         $('#update-swimmer').submit(submitUpdateSwimmer);
+
+        $('#show-add-volunteer').click(showAddVolunteerDiv);
+        $('#add-volunteer-back').click(hideAddVolunteerDiv);
+        $('#add-volunteer').submit(submitAddVolunteer);
 
         $('#admin-refresh').click(syncSwimmers);
     } else {

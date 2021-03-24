@@ -27,6 +27,10 @@ Eventlet is automatically used.
 
 Don't use gunicorn multiple workers since it is [not supported by Flask-SocketIO](https://flask-socketio.readthedocs.io/en/latest/#gunicorn-web-server). If using single-worker gunicorn, enable `--worker-class eventlet`.
 
+A `instance/secrets.py` file containing the secret key that signs user session cookies will be automatically generated if not found.
+
+There is a default initial admin with username `admin` and password equal to the secret key of the app (in `instance/secrets.py`). When starting the program, use this to create other admins.
+
 ## Clean data
 The code produces cache and databases storing names of swimmers, etc. To clean them, run
 ```sh

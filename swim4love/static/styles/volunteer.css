@@ -18,9 +18,8 @@ p {
     margin: 0;
 }
 
-.submit, .swimmer-button,
-#show-link-swimmer, #show-add-swimmer,
-#link-swimmer-back, #add-swimmer-back,
+.submit, .list-item-button, .dashed-border-button,
+#link-swimmer-back, #add-swimmer-back, #add-volunteer-back,
 #admin-refresh {
     cursor: pointer;
 }
@@ -58,43 +57,37 @@ hr {
     max-width: 400px;
 }
 
-.swimmer-item {
+.list-item {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.swimmer-name {
+.list-item-name {
     font-size: 20px;
     font-weight: 600;
 }
 
-.swimmer-id {
+.list-item-id {
     font-family: monospace;
     font-size: 14px;
     color: #60AfF0;
 }
 
-.swimmer-lap-count {
+.list-item-lap-count {
     font-size: 16px;
 }
 
-.swimmerButtonsItem {
-    float: right;
-    right: 0;
-}
-
-.swimmer-button {
-    float: right;
+.list-item-button {
     font-size: 24px;
     margin-left: 16px;
 }
 
-.swimmer-button:last-child {
+.list-item-button:first-child {
     margin: 0;
 }
 
-.swimmer-button:nth-child(1) {
+.list-item-button:last-child {
     /* color: #e74c3c; */
 }
 
@@ -185,14 +178,4 @@ hr {
     border-radius: 10px;
     border: 2px dashed #fffa;
     padding: 10px;
-}
-
-#manage-users {
-    display: flex;
-    margin: 0 -10px;
-}
-
-#manage-users > * {
-    flex-grow: 1;
-    margin: 0 10px;
 }

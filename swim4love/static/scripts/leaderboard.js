@@ -14,7 +14,7 @@ $(document).ready(() => {
     if (!($(document).width() === 1920 && $(document).height() === 1080)) console.warn('Your screen dimensions might not be optimized to display this page. Consider changing to a 1920×1080 size.');
     $.ajaxSetup({cache: false}); // no cache
     initLeaderboard();
-    window.addEventListener('resize', initLeaderboard, false);
+    window.addEventListener('resize', () => window.location.reload(), false);
     socket = io.connect(window.location.origin);
     socket.on('init', raw => process_data(raw, () => topTen.forEach((e, i) => insert_player(e, null, i))));
     socket.on('swimmers', process_data);

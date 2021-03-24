@@ -9,7 +9,7 @@ from flask_login import current_user
 
 from swim4love import login_manager
 from swim4love.site_config import SWIMMER_ID_LENGTH
-from swim4love.models import Swimmer
+from swim4love.models import Swimmer, Volunteer
 
 
 ERRORS = {
@@ -18,6 +18,8 @@ ERRORS = {
     3: '游泳者ID#{}没有登记',
     4: '请求格式不正确',
     5: '游泳者#{}的圈数不能再减啦',
+    6: '志愿者 {} 不存在',
+    7: '志愿者 {} 已存在',
 }
 
 
@@ -96,5 +98,28 @@ def get_swimmer_data(swimmer):
 
 
 def get_swimmers_data():
+    """Fetch all swimmers"""
     return {swimmer.id: get_swimmer_data(swimmer)
             for swimmer in Swimmer.query.all()}
+
+
+def get_volunteer(username):
+    """Returns volunteer from the database."""
+    volunteer = Volunteer.query.filter_by(username=username).first()
+    if not volunteer:
+        return get_error_json(6, username)
+    return volunteer
+
+
+def get_volunteer_data(volunteer):
+    """Fetch volunteer information."""
+    return {'username': volunteer.username, 'isAdmin': volunteer.is_admin}
+
+
+def get_volunteers_data():
+    """Fetch all volunteers"""
+    data = {volunteer.username: get_volunteer_data(volunteer)
+            for volunteer in Volunteer.query.all()}
+    # This is the master account and shouldn't be messed around with
+    del data['admin']
+    return data
