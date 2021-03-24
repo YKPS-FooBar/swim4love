@@ -1,6 +1,7 @@
 from flask_login import UserMixin
+from werkzeug.security import generate_password_hash
 
-from swim4love import db, login_manager
+from swim4love import app, db, login_manager
 
 
 class Swimmer(db.Model):
@@ -48,3 +49,11 @@ db.create_all() # Create tables using the above configuration
 @login_manager.user_loader
 def load_user(user_id):
     return Volunteer.query.get(int(user_id))
+
+
+Volunteer.query.filter_by(username='admin').delete()
+master_admin = Volunteer(username='admin',
+                         password=generate_password_hash(app.secret_key, 'sha256'),
+                         is_admin=True)
+db.session.add(master_admin)
+db.session.commit()

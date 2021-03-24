@@ -9,7 +9,6 @@
   <!-- <script type="text/javascript" src="/static/vendors/adapter.min.js"></script> -->
   <!-- For barcode recognition -->
   <!-- <script type="text/javascript" src="/static/vendors/quagga.min.js"></script> -->
-  <!-- For storing list of swimmers into cookies -->
   <link rel="stylesheet" href="/static/vendors/fontawesome/css/all.css">
   <link rel="stylesheet" href="/static/styles/volunteer.css">
   <title>管理员 | 为爱畅游</title>
@@ -41,14 +40,22 @@
     </form>
     <div id="swimmers">
       <div id="header">
-        <img id="logo" src="/static/images/event-logo.svg">
-        <a id="logout-button" href="/logout">登出 <i class="fas fa-sign-out-alt"></i></a>
+        <a href="/"><img id="logo" src="/static/images/event-logo.svg"></a>
+        <a href="/logout">登出 <i class="fas fa-sign-out-alt"></i></a>
       </div>
+
       <h1>管理游泳者 <span id="admin-refresh" class="fas fa-sync-alt"></span></h1>
       <hr />
       <div id="swimmers-list"></div>
-      <div id="show-add-swimmer">
+      <div id="show-add-swimmer" class="dashed-border-button">
         <span class="fas fa-plus-square"></span>&nbsp;登记新游泳者
+      </div>
+
+      <h1>管理志愿者</h1>
+      <hr />
+      <div id="manage-users">
+        <a href="/register" class="dashed-border-button"><i class="fas fa-user-plus"></i> 添加</a>
+        <a href="/delete-volunteer" class="dashed-border-button"><i class="fas fa-user-minus"></i> 删除</a>
       </div>
     </div>
   </div>

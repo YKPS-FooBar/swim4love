@@ -5,35 +5,29 @@
   <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="initial-scale=1, viewport-fit=cover">
   <script type="text/javascript" src="/static/vendors/jquery.min.js"></script>
-  <!-- For media device support -->
-  <!-- <script type="text/javascript" src="/static/vendors/adapter.min.js"></script> -->
-  <!-- For barcode recognition -->
-  <!-- <script type="text/javascript" src="/static/vendors/quagga.min.js"></script> -->
-  <!-- For storing list of swimmers into cookies -->
   <link rel="stylesheet" href="/static/vendors/fontawesome/css/all.css">
   <link rel="stylesheet" href="/static/styles/volunteer.css">
-  <title>登录 | 为爱畅游</title>
+  <title>删除志愿者 | 为爱畅游</title>
 </head>
 <body>
   <div id="page-container">
     <div id="header">
-      <img id="logo" src="/static/images/event-logo.svg">
+      <a href="/"><i class="fas fa-caret-left"></i> 返回</a>
     </div>
-    <h1>登录</h1>
+    <h1>删除志愿者</h1>
     <hr />
     <form class="login-form" method="POST">
-      {% with messages = get_flashed_messages() %}
+      {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
           <div class="flashes">
-          {% for message in messages %}
-            <strong><span class="fas fa-exclamation-triangle"></span>&nbsp;{{ message }}</strong>
+          {% for category, message in messages %}
+            <strong><span class="fas {% if category == 'success' %}fa-check{% else %}fa-exclamation-triangle{% endif %}"></span>&nbsp;{{ message }}</strong>
           {% endfor %}
           </div>
         {% endif %}
       {% endwith %}
       <input type="text" name="username" class="input input-text" placeholder="用户名" autocomplete="off" required>
-      <input type="password" name="password" class="input input-text" placeholder="密码" required>
-      <input type="submit" value="登录" class="input submit">
+      <input type="submit" value="删除" class="input submit">
     </form>
   </div>
 </body>

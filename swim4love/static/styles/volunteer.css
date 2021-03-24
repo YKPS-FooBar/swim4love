@@ -1,17 +1,21 @@
-* {
-    margin: 0;
+html {
+    background: #005f90;
+    margin: 30px;
     color: white;
     font-family: system-ui, sans-serif;
     font-size: 18px;
 }
 
-html {
-    background: #005f90;
-    margin: 30px;
-    /* margin-top: env(safe-area-inset-top);
-    margin-left: env(safe-area-inset-left);
-    margin-right: env(safe-area-inset-right);
-    margin-bottom: env(safe-area-inset-bottom); */
+a {
+    text-decoration: none;
+}
+
+a, input {
+    color: white;
+}
+
+p {
+    margin: 0;
 }
 
 .submit, .swimmer-button, #show-link-swimmer, #show-add-swimmer, #admin-refresh {
@@ -24,7 +28,7 @@ html {
 }
 
 h1 {
-    margin: 15px 0 10px;
+    margin: 40px 0 10px;
     font-size: 30px;
 }
 
@@ -38,17 +42,17 @@ hr {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 30px;
+    white-space: nowrap;
+}
+
+#header a {
+    font-size: 20px;
 }
 
 #logo {
     display: block;
-    width: 60%;
+    width: 90%;
     max-width: 400px;
-}
-
-#logout-button {
-    text-decoration: none;
-    font-size: 24px;
 }
 
 .swimmer-item {
@@ -93,6 +97,7 @@ hr {
 
 #link-swimmer-back, #add-swimmer-back {
     padding: 0;
+    font-size: 20px;
 }
 
 .msg {
@@ -170,11 +175,21 @@ hr {
     text-align: center;
     margin-top: 30px;
     border: 2px solid #fffa;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
-#show-add-swimmer {
+.dashed-border-button {
     border-radius: 10px;
     border: 2px dashed #fffa;
     padding: 10px;
+}
+
+#manage-users {
+    display: flex;
+    margin: 0 -10px;
+}
+
+#manage-users > * {
+    flex-grow: 1;
+    margin: 0 10px;
 }

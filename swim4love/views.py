@@ -199,7 +199,7 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html')
+        return render_template('volunteer/login.html')
 
     username = request.form.get('username')
     password = request.form.get('password')
@@ -208,11 +208,11 @@ def login():
 
     if not user:
         flash('用户名不存在')
-        return render_template('login.html')
+        return render_template('volunteer/login.html')
 
     if not check_password_hash(user.password, password):
         flash('用户名密码错误')
-        return render_template('login.html')
+        return render_template('volunteer/login.html')
 
     login_user(user)
 
@@ -224,12 +224,10 @@ def login():
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@admin_required
 def register():
-    if app.env != 'development':
-        abort(404)
-
     if request.method == 'GET':
-        return render_template('register.html')
+        return render_template('volunteer/register.html')
 
     username = request.form.get('username')
     password = request.form.get('password')
@@ -237,7 +235,7 @@ def register():
 
     if Volunteer.query.filter_by(username=username).first():
         flash('用户名已存在')
-        return render_template('register.html')
+        return render_template('volunteer/register.html')
 
     user = Volunteer(username=username,
                      password=generate_password_hash(password, method='sha256'),
@@ -245,13 +243,29 @@ def register():
     db.session.add(user)
     db.session.commit()
 
-    login_user(user)
+    flash('用户注册成功', 'success')
+    return render_template('volunteer/register.html')
 
-    next = request.args.get('next')
-    if next and is_safe_url(next):
-        return redirect(next)
-    else:
-        return redirect(url_for('index'))
+
+@app.route('/delete-volunteer', methods=['GET', 'POST'])
+@admin_required
+def delete_volunteer():
+    if request.method == 'GET':
+        return render_template('volunteer/delete_volunteer.html')
+
+    username = request.form.get('username')
+
+    filtered = Volunteer.query.filter_by(username=username)
+
+    if not filtered.first():
+        flash('用户名不存在')
+        return render_template('volunteer/delete_volunteer.html')
+
+    filtered.delete()
+    db.session.commit()
+
+    flash('用户删除成功', 'success')
+    return render_template('volunteer/delete_volunteer.html')
 
 
 @app.route('/logout')
@@ -264,13 +278,13 @@ def logout():
 @app.route('/volunteer')
 @login_required
 def volunteer_page():
-    return render_template('volunteer.html')
+    return render_template('volunteer/volunteer.html')
 
 
 @app.route('/admin')
 @admin_required
 def admin_page():
-    return render_template('admin.html')
+    return render_template('volunteer/admin.html')
 
 
 @app.route('/leaderboard')

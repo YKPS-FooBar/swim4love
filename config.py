@@ -37,7 +37,7 @@ if not os.path.isfile('instance/secrets.py'):
     print('No secret key file (instance/secrets.py) detected. Auto-generating...')
     os.makedirs('instance', exist_ok=True)
     with open('instance/secrets.py', 'w') as file:
-        file.write('SECRET_KEY = {!r}\n'.format(os.urandom(24)))
+        file.write('SECRET_KEY = {!r}\n'.format(os.urandom(24).hex()))
 
 
 app_config = {
