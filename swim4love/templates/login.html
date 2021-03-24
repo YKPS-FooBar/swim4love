@@ -17,19 +17,21 @@
 </head>
 <body>
   <div id="page-container">
-    <img id="logo" src="/static/images/event-logo.svg">
+    <div id="header">
+      <img id="logo" src="/static/images/event-logo.svg">
+    </div>
     <h1>登录</h1>
     <hr />
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="flashes">
-        {% for message in messages %}
-          <strong><span class="fas fa-exclamation-triangle"></span>&nbsp;{{ message }}</strong>
-        {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
-    <form method="POST">
+    <form class="login-form" method="POST">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="flashes">
+          {% for message in messages %}
+            <strong><span class="fas fa-exclamation-triangle"></span>&nbsp;{{ message }}</strong>
+          {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
       <input type="text" name="username" class="input input-text" placeholder="用户名" autocomplete="off" required>
       <input type="password" name="password" class="input input-text" placeholder="密码" required>
       <input type="submit" value="登录" class="input submit">

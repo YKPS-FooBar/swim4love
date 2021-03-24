@@ -284,6 +284,24 @@ function hideUpdateSwimmerDiv() {
     $('#update-swimmer-name').val('');
 }
 
+function syncSwimmers() {
+    if (admin) {
+        $.getJSON('/swimmer/all').done(response => {
+            for (const id in response.data) {
+                swimmers[id.toString().padStart(3, '0')] = response.data[id];
+            }
+            updateSwimmers();
+        });
+    } else {
+        $.getJSON('/volunteer/swimmers').done(response => {
+            for (const id in response.data) {
+                swimmers[id.toString().padStart(3, '0')] = response.data[id];
+            }
+            updateSwimmers();
+        });
+    }
+}
+
 $(document).ready(() => {
     $.ajaxSetup({cache: false});
 
@@ -295,21 +313,11 @@ $(document).ready(() => {
         $('#update-swimmer-back').click(hideUpdateSwimmerDiv);
         $('#update-swimmer').submit(submitUpdateSwimmer);
 
-        $.getJSON('/swimmer/all').done(response => {
-            for (const id in response.data) {
-                swimmers[id.toString().padStart(3, '0')] = response.data[id];
-            }
-            updateSwimmers();
-        });
+        $('#admin-refresh').click(syncSwimmers);
     } else {
         $('#show-link-swimmer').click(showLinkSwimmerDiv);
         $('#link-swimmer-back').click(hideLinkSwimmerDiv);
-
-        $.getJSON('/volunteer/swimmers').done(response => {
-            for (const id in response.data) {
-                swimmers[id.toString().padStart(3, '0')] = response.data[id];
-            }
-            updateSwimmers();
-        });
     }
+
+    syncSwimmers();
 });
