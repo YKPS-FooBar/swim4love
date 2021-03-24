@@ -269,6 +269,7 @@ function hideAddSwimmerDiv() {
     $('#add-swimmer').hide();
     $('#swimmers').show();
     $('.input-digit').val('');
+    $('#add-swimmer-name').val('');
 }
 
 function showUpdateSwimmerDiv(id) {
