@@ -28,7 +28,9 @@ class Volunteer(db.Model, UserMixin):
     password = db.Column(db.String(80), nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
-    swimmers = db.relationship('Swimmer', secondary='volunteer_swimmers', order_by='Swimmer.id')
+    # I think it's good to keep it unordered
+    # so that the newly added swimmers are at the bottom
+    swimmers = db.relationship('Swimmer', secondary='volunteer_swimmers') # , order_by='Swimmer.id')
 
     def __repr__(self):
         return '<Volunteer #{} {!r}>'.format(self.id, self.username)
@@ -45,6 +47,7 @@ class VolunteerSwimmers(db.Model):
 
 
 db.create_all() # Create tables using the above configuration
+
 
 @login_manager.user_loader
 def load_user(user_id):
