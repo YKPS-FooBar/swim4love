@@ -98,6 +98,18 @@ let volunteers = {};
 
 function post(url, payload, callback) {
     return $.post(url, payload, 'json').done(response => {
+        if (typeof response === 'string') {
+            // This means that text rather than JSON is returned from a POST
+            // which probably means that this request is redirected to an HTML page
+            // which probably means that the user is not privileged to access this API
+            // (e.g. user session timed out; user was deleted; user was de-escalated)
+            // so that Flask-Login redirects it to /login
+            // which probably means that we should try to reload this page
+            // to let the user log in again
+            window.location.reload();
+            return;
+        }
+
         if (response.code === 0) {
             callback(response.data);
         } else {
