@@ -21,7 +21,7 @@
         {% if messages %}
           <div class="flashes">
           {% for category, message in messages %}
-            <strong><span class="fas {% if category == 'success' %}fa-check{% else %}fa-exclamation-triangle{% endif %}"></span>&nbsp;{{ message }}</strong>
+            <p><strong><i class="fas {% if category == 'success' %}fa-check{% else %}fa-exclamation-triangle{% endif %}"></i> {{ message }}</strong></p>
           {% endfor %}
           </div>
         {% endif %}

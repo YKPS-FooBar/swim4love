@@ -4,7 +4,7 @@ import traceback
 from functools import wraps
 from urllib.parse import urlparse, urljoin
 
-from flask import jsonify, request, abort
+from flask import jsonify, request, abort, redirect, url_for
 from flask_login import current_user
 
 from swim4love import login_manager
@@ -68,8 +68,14 @@ def get_error_json(error_code: int, swimmer_id):
 def admin_required(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if not current_user.is_authenticated or not current_user.is_admin:
+        if not current_user.is_authenticated:
             return login_manager.unauthorized()
+        if not current_user.is_admin:
+            # If some non-admin accesses admin stuff (e.g. /admin),
+            # they shouldn't be redirected in a loop like
+            # /admin -> /login?next=/admin -> (user logs in) -> /admin -> /login?next=/admin
+            # To avoid this, I don't use the `next` param here
+            return redirect(url_for('login'))
         return func(*args, **kwargs)
     return wrapper
 
