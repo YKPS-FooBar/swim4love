@@ -4,7 +4,7 @@ import traceback
 from functools import wraps
 from urllib.parse import urlparse, urljoin
 
-from flask import jsonify, request, abort, redirect, url_for
+from flask import jsonify, request, abort, redirect, url_for, flash
 from flask_login import current_user
 
 from swim4love import login_manager
@@ -75,6 +75,7 @@ def admin_required(func):
             # they shouldn't be redirected in a loop like
             # /admin -> /login?next=/admin -> (user logs in) -> /admin -> /login?next=/admin
             # To avoid this, I don't use the `next` param here
+            flash('用户无权限访问此页面')
             return redirect(url_for('login'))
         return func(*args, **kwargs)
     return wrapper
