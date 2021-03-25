@@ -2,13 +2,13 @@
  * Common code for volunteer & admin management
  */
 
-var swimmers = {};
-var volunteers = {};
+let swimmers = {};
+let volunteers = {};
 
-// var isCameraOn = false;
+// let isCameraOn = false;
 
 // // config, for Quagga.init(config, callback)
-// var config = {
+// let config = {
 //     inputStream: {
 //         name: 'Live',
 //         type: 'LiveStream',
@@ -93,6 +93,9 @@ var volunteers = {};
 //     });
 // }
 
+
+/********************* API calling functions *********************/
+
 function post(url, payload, callback) {
     return $.post(url, payload, 'json').done(response => {
         if (response.code === 0) {
@@ -169,9 +172,8 @@ function addVolunteer(username, password, isAdmin) {
     });
 }
 
-function isValidId(id) {
-    return /^[0-9][0-9][0-9]$/.test(id);
-}
+
+/********************* Update swimmer & volunteer list functions *********************/
 
 function updateSwimmer(id) {
     const data = swimmers[id];
@@ -251,6 +253,13 @@ function updateVolunteers() {
     }
 }
 
+
+/********************* On submit/input functions *********************/
+
+function isValidId(id) {
+    return /^[0-9][0-9][0-9]$/.test(id);
+}
+
 function inputNext(next) {
     $('#' + next).focus();
 }
@@ -285,6 +294,9 @@ function submitAddVolunteer(event) {
     addVolunteer(username, password, isAdmin);
     event.preventDefault();
 }
+
+
+/********************* Show & hide div functions *********************/
 
 function showLinkSwimmerDiv() {
     // startCamera();
@@ -346,6 +358,9 @@ function hideAddVolunteerDiv() {
     $('#add-volunteer-is-admin').prop('checked', false);
 }
 
+
+/********************* Sync swimmers *********************/
+
 function syncSwimmers() {
     if (admin) {
         $.getJSON('/swimmer/all').done(response => {
@@ -370,6 +385,34 @@ function syncSwimmers() {
     }
 }
 
+
+/********************* Search swimmers *********************/
+
+let allSwimmers;
+
+function searchSwimmers() {
+    allSwimmers = $.extend({}, swimmers);
+    $('#swimmers-heading').hide();
+    $('#swimmers-search-input').show().focus();
+}
+
+function inputSearchSwimmers() {
+    const query = $('#swimmers-search-input').val().toLowerCase();
+    if (query === '' && !$('#swimmers-search-input').is(':focus')) {
+        swimmers = $.extend({}, allSwimmers);
+        $('#swimmers-search-input').hide();
+        $('#swimmers-heading').show();
+    } else {
+        swimmers = Object.fromEntries(
+            Object.entries(allSwimmers).filter(entry => entry[0].indexOf(query) !== -1 || entry[1].name.toLowerCase().indexOf(query) !== -1)
+        );
+    }
+    updateSwimmers();
+}
+
+
+/********************* Setup *********************/
+
 $(document).ready(() => {
     $.ajaxSetup({cache: false});
 
@@ -385,7 +428,9 @@ $(document).ready(() => {
         $('#add-volunteer-back').click(hideAddVolunteerDiv);
         $('#add-volunteer').submit(submitAddVolunteer);
 
-        $('#admin-refresh').click(syncSwimmers);
+        $('#swimmers-refresh').click(syncSwimmers);
+        $('#swimmers-search').click(searchSwimmers);
+        $('#swimmers-search-input').on('input blur', inputSearchSwimmers);
     } else {
         $('#show-link-swimmer').click(showLinkSwimmerDiv);
         $('#link-swimmer-back').click(hideLinkSwimmerDiv);

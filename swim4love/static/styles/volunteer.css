@@ -20,13 +20,17 @@ p {
 
 .submit, .list-item-button, .dashed-border-button,
 #link-swimmer-back, #add-swimmer-back, #add-volunteer-back,
-#admin-refresh {
+#swimmers-refresh, #swimmers-search {
     cursor: pointer;
 }
 
 h1 {
     margin: 40px 0 10px;
     font-size: 30px;
+}
+
+h1 .fas {
+    margin-left: 10px;
 }
 
 hr {
@@ -150,6 +154,13 @@ hr {
 
 .input-text::placeholder {
     color: #fff8;
+}
+
+#swimmers-search-input {
+    margin: 40px 0 10px;
+    border: none;
+    width: 100%;
+    padding: 7px 0 0 0;
 }
 
 .input-check {
