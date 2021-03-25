@@ -24,11 +24,6 @@ p {
     cursor: pointer;
 }
 
-.fas {
-    font-size: inherit;
-    color: inherit;
-}
-
 h1 {
     margin: 40px 0 10px;
     font-size: 30px;
@@ -162,8 +157,12 @@ hr {
 }
 
 .input-check input[type=checkbox], .input-check input[type=radio] {
-    width: 1em;
-    height: 1em;
+    width: 1.25em;
+    height: 1.25em;
+    vertical-align: middle;
+}
+
+.input-check label {
     vertical-align: middle;
 }
 
