@@ -62,6 +62,10 @@ hr {
     margin-bottom: 20px;
 }
 
+.list-item-name-container {
+    flex-grow: 1;
+}
+
 .list-item-name {
     font-size: 20px;
     font-weight: 600;
@@ -77,13 +81,13 @@ hr {
     font-size: 16px;
 }
 
+.list-item-buttons-container {
+    white-space: nowrap;
+}
+
 .list-item-button {
     font-size: 24px;
     margin-left: 16px;
-}
-
-.list-item-button:first-child {
-    margin: 0;
 }
 
 .list-item-button:last-child {

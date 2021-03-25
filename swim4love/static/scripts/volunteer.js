@@ -185,12 +185,13 @@ function updateSwimmers() {
     $('#swimmers-list').html('');
     for (const id of Object.keys(swimmers).sort()) {
         var $swimmerItem = $('<div>').attr('id', `swimmer-${id}`).addClass('list-item');
-        var $swimmerNameItem = $('<div>').css('flex-grow', '1').appendTo($swimmerItem);
+
+        var $swimmerNameItem = $('<div>').addClass('list-item-name-container').appendTo($swimmerItem);
         $('<p>').html('#' + id).addClass('list-item-id').appendTo($swimmerNameItem);
         $('<p>').addClass('list-item-name').appendTo($swimmerNameItem);
         $('<p>').addClass('list-item-lap-count').appendTo($swimmerNameItem);
 
-        var $swimmerButtonsItem = $('<div>').appendTo($swimmerItem);
+        var $swimmerButtonsItem = $('<div>').addClass('list-item-buttons-container').appendTo($swimmerItem);
 
         if (admin) {
             $('<span>').addClass('list-item-button fas fa-pen').appendTo($swimmerButtonsItem).click(() => {
@@ -238,10 +239,11 @@ function updateVolunteers() {
     $('#volunteers-list').html('');
     for (const username of Object.keys(volunteers).sort()) {
         var $volunteerItem = $('<div>').attr('id', `volunteer-${username}`).addClass('list-item');
-        var $volunteerNameItem = $('<div>').css('flex-grow', '1').appendTo($volunteerItem);
+
+        var $volunteerNameItem = $('<div>').addClass('list-item-name-container').appendTo($volunteerItem);
         $('<p>').addClass('list-item-name').text(username).css('font-weight', volunteers[username].isAdmin ? '600' : '400').appendTo($volunteerNameItem);
 
-        var $volunteerButtonsItem = $('<div>').appendTo($volunteerItem);
+        var $volunteerButtonsItem = $('<div>').addClass('list-item-buttons-container').appendTo($volunteerItem);
 
         $('<span>').addClass('list-item-button fas fa-user-minus').appendTo($volunteerButtonsItem).click(() => {
             if (confirm(`确定删除志愿者 ${username} 吗？`)) {
