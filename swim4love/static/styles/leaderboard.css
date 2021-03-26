@@ -24,6 +24,10 @@
 * {
     margin: 0;
     font-family: 'DIN Pro', sans-serif;
+}
+
+
+body {
     color: white;
 }
 
@@ -36,14 +40,6 @@
     position: absolute;
 }
 
-.flowing-text {
-    color: rgba(255, 255, 255, 1.0);
-    background-image: url(../images/gradient.png);
-    background-repeat: repeat-x;
-    -webkit-background-clip: text;
-    animation: flowing-animation 15s linear infinite;
-}
-
 
 .container-main {
     position: absolute;
@@ -51,8 +47,6 @@
     height: 100%;
     overflow: hidden;
     background: linear-gradient(-50deg, #1D8FE1 30%, #19AAF0 50%, #1D8FE1 70%);
-    /* background-image: url(../images/gradient2.png); */
-    /* background-repeat: repeat-x; */
     animation: flowing-animation 15s linear infinite;
 }
 
@@ -89,43 +83,26 @@
 }
 
 .rank-title {
-    top: calc(52px * 1.5 - 4px);
+    /* Do not ask me why -4px here. */
+    /* I do not know; I do not care; it works. */
+    top: calc(1.5em - 4px);
     left: 0;
     text-align: right;
     font-weight: bold;
-    line-height: calc(46px * 1.5);
+    line-height: 1.5;
 }
 
-.rank-title > :nth-of-type(-n+3) {
-    margin-right: -10px;
+.rank-title > span:nth-of-type(1), .participant[data-rank="0"] {
+    color: hsl(49, 96%, 75%);
 }
 
-/* .rank-title > :nth-of-type(1) {
-  background: gold;
+.rank-title > span:nth-of-type(2), .participant[data-rank="1"] {
+    color: hsl(0, 0%, 85%);
 }
 
-.rank-title > :nth-of-type(2) {
-  background: #C0C0C0;
+.rank-title > span:nth-of-type(3), .participant[data-rank="2"] {
+    color: hsl(32, 70%, 75%);
 }
-
-.rank-title > :nth-of-type(3) {
-  background: #CD7F32;
-} */
-
-/* .leader.rank > span:nth-child(1)::before {
-    content: '🥇';
-    margin-right: 10px;
-}
-
-.leader.rank > span:nth-child(3)::before {
-    content: '🥈';
-    margin-right: 10px;
-}
-
-.leader.rank > span:nth-child(5)::before {
-    content: '🥉';
-    margin-right: 10px;
-} */
 
 .participant * {
     position: absolute;
