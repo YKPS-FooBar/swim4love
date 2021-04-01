@@ -1,6 +1,7 @@
 flask
 Flask-SQLAlchemy
 SQLAlchemy<1.4.0  # Compatible with Flask-SQLAlchemy
+PyMySQL
 flask-socketio
 Flask-Caching
 Flask-Cors

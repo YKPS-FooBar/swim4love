@@ -11,12 +11,9 @@ from flask_login import LoginManager
 from config import app_config
 
 
-SERVER_MODE = os.environ.get('S4L_ENV', 'production')
-
-
 ##################### App Initialization #####################
 app = Flask(__name__, instance_relative_config=True)
-app.config.from_object(app_config[SERVER_MODE])
+app.config.from_object(app_config)
 app.config.from_pyfile('secrets.py')
 
 db = SQLAlchemy()

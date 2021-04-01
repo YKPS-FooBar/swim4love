@@ -1,3 +1,8 @@
+"""Configurations for the Flask app.
+
+Note that additional configurations are also set in run.py
+"""
+
 import os
 
 
@@ -40,7 +45,4 @@ if not os.path.isfile('instance/secrets.py'):
         file.write('SECRET_KEY = {!r}\n'.format(os.urandom(24).hex()))
 
 
-app_config = {
-    'development': DevelopmentConfig,
-    'production': ProductionConfig
-}
+app_config = ProductionConfig

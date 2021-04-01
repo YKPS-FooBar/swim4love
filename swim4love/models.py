@@ -10,7 +10,7 @@ class Swimmer(db.Model):
     __tablename__ = 'swimmers'
 
     # TODO(thomas): this should be changed to also include swim time & year group
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     name = db.Column(db.String(80), nullable=False)
     laps = db.Column(db.Integer, nullable=False, default=0)
 
