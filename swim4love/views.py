@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from flask import request, render_template, jsonify, send_from_directory, redirect, url_for, flash, abort
 from flask_socketio import emit
 from flask_login import login_user, logout_user, login_required, current_user

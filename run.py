@@ -40,7 +40,7 @@ if __name__ == '__main__':
     if args.clean:
         from swim4love import db
         db.drop_all()
-        exit(0)
+        sys.exit(0)
 
     # Initialize app
     from swim4love import app, socketio

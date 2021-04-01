@@ -30,7 +30,8 @@ class Volunteer(db.Model, UserMixin):
 
     # I think it's good to keep it unordered
     # so that the newly added swimmers are at the bottom
-    swimmers = db.relationship('Swimmer', secondary='volunteer_swimmers') # , order_by='Swimmer.id')
+    # swimmers = db.relationship('Swimmer', secondary='volunteer_swimmers', order_by='Swimmer.id')
+    swimmers = db.relationship('Swimmer', secondary='volunteer_swimmers')
 
     def __repr__(self):
         return '<Volunteer #{} {!r}>'.format(self.id, self.username)
@@ -46,7 +47,7 @@ class VolunteerSwimmers(db.Model):
     swimmer_id = db.Column(db.Integer(), db.ForeignKey('swimmers.id', ondelete='CASCADE'))
 
 
-db.create_all() # Create tables using the above configuration
+db.create_all()  # Create tables using the above configuration
 
 
 @login_manager.user_loader

@@ -1,5 +1,5 @@
-import os
-from time import sleep
+# import os
+# from time import sleep
 import webbrowser
 
 from swim4love.site_config import ROOT_URL
