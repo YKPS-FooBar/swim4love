@@ -11,7 +11,7 @@ class Swimmer(db.Model):
 
     # TODO(thomas): this should be changed to also include swim time & year group
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
-    name = db.Column(db.String(80), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
     laps = db.Column(db.Integer, nullable=False, default=0)
 
     def __repr__(self):
@@ -24,8 +24,8 @@ class Volunteer(db.Model, UserMixin):
     __tablename__ = 'volunteers'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(80), nullable=False)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
     # I think it's good to keep it unordered
