@@ -25,5 +25,6 @@ with webdriver.Chrome() as driver:
         # a thing i learned from last year:
         # the swimmer is likely to take a photo with the achievement page
         # so the timeout should be loooong
-        time.sleep(16)
+        # Edit: Extended the timout from 16 to 20
+        time.sleep(20)
         driver.get(root_url + '/leaderboard')
