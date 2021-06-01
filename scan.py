@@ -16,6 +16,7 @@ root_url = ROOT_URL if len(sys.argv) <= 1 else sys.argv[1]
 
 with webdriver.Chrome() as driver:
     driver.get(root_url + '/leaderboard')
+    print("请先登记ID再输入需要显示游泳者ID")
     while True:
         swimmer_id = input('Swimmer ID: ')
         if not is_valid_id(swimmer_id):
