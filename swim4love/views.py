@@ -159,7 +159,8 @@ def volunteer_unlink_swimmer():
     # Validate form data
     swimmer = get_swimmer(swimmer_id)
 
-    current_user.swimmers.remove(swimmer)
+    if swimmer in current_user.swimmers:
+        current_user.swimmers.remove(swimmer)
     db.session.commit()
 
     return jsonify({'code': 0, 'msg': 'Success'})
