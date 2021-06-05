@@ -4,6 +4,7 @@ input('⚠️ warning: this will alter/delete swimmer data: (enter to continue)'
 
 import getpass
 import random
+import time
 
 import requests
 
@@ -78,4 +79,4 @@ for i in range(len(id_pool)):
 end = time.time()
 
 print(f'✅ for reference, China -> US swim4love.thomaszhu.cn: ~300s')
-print(f'⚠️ the test took {start - end:.2f}s')
+print(f'⚠️ the test took {end - start:.2f}s')
