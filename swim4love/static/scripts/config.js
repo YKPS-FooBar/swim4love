@@ -14,7 +14,7 @@ const SILVER_MEDAL_BG = 'linear-gradient(to left, #BDBBBE 0%, #9D9EA3 100%)';
 // const GOLD_MEDAL_BG = 'linear-gradient(-45deg, #e6b980 0%, #eacda3 100%)'
 const GOLD_MEDAL_BG = 'linear-gradient(120deg, #f6d365 0%, #fda085 100%)';
 const ACHIEVEMENT_SET_STAT_TIMEOUT = 4000; // in milliseconds
-const ACHIEVEMENT_CONFETTI_TIMEOUT = 12000; // in milliseconds
+const ACHIEVEMENT_CONFETTI_TIMEOUT = 30000; // in milliseconds
 const ACHIEVEMENT_PAGE_TIMEOUT = 40000; // in milliseconds
 
 $(document).ready(() => {
