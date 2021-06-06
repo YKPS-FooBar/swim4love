@@ -100,7 +100,6 @@ def get_swimmer(swimmer_id):
 
 def get_swimmer_data(swimmer):
     """Fetch swimmer information"""
-    # TODO(thomas): this should be changed to also include swim time & year group
     return {'id': swimmer.id, 'name': swimmer.name, 'laps': swimmer.laps}
 
 

@@ -9,6 +9,9 @@ let previousData = {}; // for checking changes
 // A mapping from `id` to a Date.now() that records the time of last change
 let timestamp = {};
 
+// ID input from the barcode scanner
+let inputText = '';
+
 
 $(document).ready(() => {
     if (!($(document).width() === 1920 && $(document).height() === 1080)) console.warn('Your screen dimensions might not be optimized to display this page. Consider changing to a 1920×1080 size.');
@@ -20,7 +23,18 @@ $(document).ready(() => {
     socket.on('swimmers', process_data);
     leaderboard = [];
 
-    // setTimeout(() => window.location.reload(), 8000);
+    // Barcode input ID -> takes to the achievement page
+    $(document.body).keydown(e => {
+        const inputChar = String.fromCharCode(e.which);
+        const lastThreeInput = inputText.slice(-3);
+        // Barcode input is like "123return"
+        // If return pressed & the last 3 characters are numbers
+        if ('\r\n'.includes(inputChar) && /^[0-9][0-9][0-9]$/.test(lastThreeInput)) {
+            window.location.href = `/achievement/${inputText.slice(-3)}`;
+        } else {
+            inputText += inputChar;
+        }
+    });
 });
 
 

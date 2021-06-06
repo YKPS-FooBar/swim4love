@@ -291,9 +291,6 @@ def leaderboard_page():
 
 @app.route('/achievement/<swimmer_id>')
 def achievement_page(swimmer_id):
-    # Validation
-    swimmer = get_swimmer(swimmer_id)
-
     return render_template('achievement.html', id=swimmer_id)
 
 
