@@ -46,17 +46,16 @@ class VolunteerSwimmers(db.Model):
     swimmer_id = db.Column(db.Integer(), db.ForeignKey('swimmers.id', ondelete='CASCADE'))
 
 
-db.create_all()  # Create tables using the above configuration
-
 
 @login_manager.user_loader
 def load_user(user_id):
     return Volunteer.query.get(int(user_id))
 
-
-Volunteer.query.filter_by(username='admin').delete()
-master_admin = Volunteer(username='admin',
-                         password=generate_password_hash(app.secret_key, 'sha256'),
-                         is_admin=True)
-db.session.add(master_admin)
-db.session.commit()
+with app.app_context():
+    db.create_all()  # Create tables using the above configuration
+    Volunteer.query.filter_by(username='admin').delete()
+    master_admin = Volunteer(username='admin',
+                            password=generate_password_hash(app.secret_key, 'sha256'),
+                            is_admin=True)
+    db.session.add(master_admin)
+    db.session.commit()

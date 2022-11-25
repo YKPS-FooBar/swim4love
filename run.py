@@ -37,11 +37,12 @@ if __name__ == '__main__':
 
     config.app_config.SQLALCHEMY_DATABASE_URI = args.database
 
+    from swim4love import app, socketio
     if args.clean:
         from swim4love import db
-        db.drop_all()
+        with app.app_context():
+            db.drop_all()
         sys.exit(0)
 
     # Initialize app
-    from swim4love import app, socketio
     socketio.run(app, host=args.host, port=args.port)
