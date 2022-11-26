@@ -147,41 +147,41 @@ body {
     font-size: 30px;
 }
 
-.tally-spring {
+.house-spring {
     color: #00ff00;
 }
 
-.tally-spring::after {
+.house-spring::after {
     content: 'm (Spring)';
     margin-right: 10px;
     font-size: 30px;
 }
 
-.tally-summer {
+.house-summer {
     color: #ffff00;
 }
 
-.tally-summer::after {
+.house-summer::after {
     content: 'm (Summer)';
     margin-right: 10px;
     font-size: 30px;
 }
 
-.tally-autumn {
+.house-autumn {
     color: #ff0000;
 }
 
-.tally-autumn::after {
+.house-autumn::after {
     content: 'm (Autumn)';
     margin-right: 10px;
     font-size: 30px;
 }
 
-.tally-winter {
+.house-winter {
     color: #0000ff;
 }
 
-.tally-winter::after {
+.house-winter::after {
     content: 'm (Winter)';
     margin-right: 10px;
     font-size: 30px;

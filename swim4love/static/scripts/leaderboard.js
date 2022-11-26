@@ -39,8 +39,8 @@ $(document).ready(() => {
 
 
 function process_data(raw, callback=update_leaderboard) {
-    // `raw` is {id: {id: 123, name: 'Name', laps: 10}, ...}
-    // `data` is [{id: '123', name: 'Name', laps: 10}, ...]
+    // `raw` is {id: {id: 123, name: 'Name', laps: 10, house: 'Spring'}, ...}
+    // `data` is [{id: '123', name: 'Name', laps: 10, house: 'Spring'}, ...]
     let data = Object.values(raw).map(swimmer => Object({
         id: swimmer.id.toString(),
         name: swimmer.name,
@@ -58,6 +58,15 @@ function process_data(raw, callback=update_leaderboard) {
     });
     // Sort `data` according to laps -> timestamp
     data.sort((a, b) => a.laps > b.laps ? -1 : (a.laps < b.laps ? 1 : timestamp[a.id] < timestamp[b.id] ? -1 : 1));
+
+    let houseTotal = {};
+    data.forEach(e => {
+        currentHouse = e.house.toLowerCase();
+        if (houseTotal[currentHouse] === undefined) houseTotal[currentHouse] = 0;
+        houseTotal[currentHouse] += e.laps;
+    });
+
+    Object.keys(houseTotal).forEach(house => house_tally(house, houseTotal[house]));
 
     let newTotal;
     if (data.length === 0) {
@@ -111,6 +120,10 @@ function tally(newTotal) {
     change_number($('.tally.meters.num'), newTotal * LAP_LENGTH);
 }
 
+
+function house_tally(house, newTotal) {
+    change_number($(`.tally.num.house-${house}`), newTotal * LAP_LENGTH);
+}
 
 function change_number(element, updated) {
     element.prop('counter', parseInt(element.text())).animate(
@@ -186,3 +199,16 @@ function change_rank(id, newRank) {
     $(`#${id} *`).css('top', (newRank + 1) * LEADER_LINE_HEIGHT);
     $(`#${id}`).attr('data-rank', newRank);
 }
+
+/* --- WORK IN PROGRESS? ---
+function change_rank_house(house, newRank) {
+    if (newRank >= topTen.length || newRank < 0) {
+        console.warn(`Cannot change player ${house} to rank ${newRank}`);
+        return;
+    };
+    if (parseInt($(`#${house}`).attr('data-rank')) === newRank) return;
+    // Move this player to new position
+    $(`#${id} *`).css('top', (newRank + 1) * LEADER_LINE_HEIGHT);
+    $(`#${id}`).attr('data-rank', newRank);
+}
+*/
