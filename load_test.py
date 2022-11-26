@@ -1,15 +1,24 @@
-print('✅ this script tests both server load and connection.')
-print('✅ for stress test, running this script from multiple nodes/threads is recommended.')
-input('⚠️ warning: this will alter/delete swimmer data: (enter to continue)')
-
 import getpass
 import random
 import time
 
 import requests
+import sys
+import argparse
 
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-root_url = 'https://swim4love.thomaszhu.cn'
+parser.add_argument('--host',
+                    help='full url to load test',
+                    default='https://swim4love.thomaszhu.cn')
+
+args = parser.parse_args()
+
+print('✅ this script tests both server load and connection.')
+print('✅ for stress test, running this script from multiple nodes/threads is recommended.')
+input('⚠️ warning: this will alter/delete swimmer data: (enter to continue)')
+
+root_url = args.host
 
 username = input('Volunteer username: ')
 password = getpass.getpass('Volunteer password: ')
