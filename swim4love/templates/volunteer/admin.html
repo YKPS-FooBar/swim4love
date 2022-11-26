@@ -29,6 +29,15 @@
       或扫描条形码：<div id="barcode-scanner" style="display: none;"></div> -->
       <strong class="msg">输入游泳者姓名：</strong>
       <input id="add-swimmer-name" class="input input-text" type="text" placeholder="例：张明 Ming Zhang" autocomplete="off" required>
+      <strong class="msg">选择游泳者学院：</strong>
+      <select id="add-swimmer-house" class="input input-dropdown">
+        <option value="n/a" disabled selected>选择学院：</option>
+        <option value="Spring">Spring</option>
+        <option value="Summer">Summer</option>
+        <option value="Autumn">Autumn</option>
+        <option value="Winter">Winter</option>
+        <option value="None">None</option>
+      </select>
       <input type="submit" class="input submit" value="登记">
     </form>
 

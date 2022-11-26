@@ -12,6 +12,7 @@ class Swimmer(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     name = db.Column(db.String(100), nullable=False)
     laps = db.Column(db.Integer, nullable=False, default=0)
+    house = db.Column(db.String(6), nullable=True)
 
     def __repr__(self):
         return '<Swimmer #{:03d} {!r}>'.format(self.id, self.name)

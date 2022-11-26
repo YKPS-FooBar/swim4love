@@ -44,7 +44,8 @@ function process_data(raw, callback=update_leaderboard) {
     let data = Object.values(raw).map(swimmer => Object({
         id: swimmer.id.toString(),
         name: swimmer.name,
-        laps: swimmer.laps
+        laps: swimmer.laps,
+        house: swimmer.house
     }));
 
     data.forEach((e, i) => {
@@ -157,12 +158,13 @@ function insert_player(player, compareArray=leaderboard, insertRank=null, init=t
     let name = player.name;
     let laps = player.laps;
     let id = player.id;
+    let house = player.house;
     // swimmers who haven't swum should also be on the list
     // if (laps === 0) return;
     let meters = laps * LAP_LENGTH;
     let rank = (![null, undefined, NaN].includes(insertRank)) ? insertRank : get_rank(laps, compareArray);
     let initPos = init ? (rank + 2) * LEADER_LINE_HEIGHT : 800; // for rise up animation
-    $('.leaderboard').append(`<div class='participant' id='${id}' data-rank='${rank}'><span class='name' style='top: ${initPos}px; opacity: 0;'>${name}</span><span class='laps' style='top: ${initPos}px; opacity: 0;'>${laps}</span><span class='meters' style='top: ${initPos}px; opacity: 0;'>${meters}</span></div>`);
+    $('.leaderboard').append(`<div class='participant' id='${id}' data-rank='${rank}'><span class='name' style='top: ${initPos}px; opacity: 0;'>${name}</span><span class='house' style='top: ${initPos}px; opacity: 0;'>${house}</span><span class='laps' style='top: ${initPos}px; opacity: 0;'>${laps}</span><span class='meters' style='top: ${initPos}px; opacity: 0;'>${meters}</span></div>`);
     // Align elements
     for (let i = 1; i <= LEADER_COLS_WIDTH.length; i++) {
         $(`#${id} :nth-child(${i})`).css('left', LEADER_COLS_WIDTH[i] * leaderWidth);

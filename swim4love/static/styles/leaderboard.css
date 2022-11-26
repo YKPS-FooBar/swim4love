@@ -144,5 +144,47 @@ body {
 
 .tally.meters.num::after {
     content: 'm';
-    margin-left: 10px;
+    font-size: 30px;
 }
+
+.tally-spring {
+    color: #00ff00;
+}
+
+.tally-spring::after {
+    content: 'm (Spring)';
+    margin-right: 10px;
+    font-size: 30px;
+}
+
+.tally-summer {
+    color: #ffff00;
+}
+
+.tally-summer::after {
+    content: 'm (Summer)';
+    margin-right: 10px;
+    font-size: 30px;
+}
+
+.tally-autumn {
+    color: #ff0000;
+}
+
+.tally-autumn::after {
+    content: 'm (Autumn)';
+    margin-right: 10px;
+    font-size: 30px;
+}
+
+.tally-winter {
+    color: #0000ff;
+}
+
+.tally-winter::after {
+    content: 'm (Winter)';
+    margin-right: 10px;
+    font-size: 30px;
+}
+
+/* Footer */
