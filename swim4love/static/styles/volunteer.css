@@ -156,6 +156,13 @@ hr {
     border-radius: 0;
 }
 
+.input-dropdown {
+    border-bottom: 2px solid #fffa;
+    border-radius: 0;
+    color: #fffa;
+    border: none;
+}
+
 .input-text::placeholder {
     color: #fff8;
 }

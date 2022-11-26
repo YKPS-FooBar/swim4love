@@ -70,6 +70,7 @@ def swimmer_sub_lap():
 def add_new_swimmer():
     swimmer_id = request.form.get('id')
     swimmer_name = request.form.get('name')
+    swimmer_house = request.form.get('house')
 
     # Validate
     if not swimmer_id or not swimmer_name:
@@ -78,9 +79,11 @@ def add_new_swimmer():
         abort(get_error_json(1, swimmer_id))
     if Swimmer.query.get(int(swimmer_id)):
         abort(get_error_json(2, swimmer_id))
+    if swimmer_house not in ["Spring", "Summer", "Fall", "Winter", "None"]:
+        abort(get_error_json(8, swimmer_id))
 
     # Add swimmer into database
-    swimmer = Swimmer(id=int(swimmer_id), name=swimmer_name, laps=0)
+    swimmer = Swimmer(id=int(swimmer_id), name=swimmer_name, laps=0, house=swimmer_house)
     db.session.add(swimmer)
     db.session.commit()
 
