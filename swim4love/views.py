@@ -79,7 +79,7 @@ def add_new_swimmer():
         abort(get_error_json(1, swimmer_id))
     if Swimmer.query.get(int(swimmer_id)):
         abort(get_error_json(2, swimmer_id))
-    if swimmer_house not in ["Spring", "Summer", "Fall", "Winter", "None"]:
+    if swimmer_house not in ["Spring", "Summer", "Autumn", "Winter", "None"]:
         abort(get_error_json(8, swimmer_id))
 
     # Add swimmer into database
