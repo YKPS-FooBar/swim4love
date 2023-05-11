@@ -7,11 +7,9 @@ ROOT_URL = 'http://swim4love.myykps.cn'
 SWIMMER_ID_LENGTH = 3
 
 # Length of one lap in meters
-LAP_LENGTH = 50
-'''
-    SWIM_LAP_LENGTH   = 50
-    SWIM_LAP_SCORE    = 200
-    RUN_LAP_LENGTH    = 300
-    RUN_LAP_SCORE     = 300
-    CHALLENGE_SCORE   = 4000
-'''
+LAP_LENGTH = 50 # Deprecated
+SWIM_LAP_LENGTH   = 50
+SWIM_LAP_SCORE    = 200
+RUN_LAP_LENGTH    = 300
+RUN_LAP_SCORE     = 300
+CHALLENGE_SCORE   = 4000

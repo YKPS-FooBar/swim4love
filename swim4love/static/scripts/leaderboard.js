@@ -44,8 +44,9 @@ function process_data(raw, callback=update_leaderboard) {
     let data = Object.values(raw).map(swimmer => Object({
         id: swimmer.id.toString(),
         name: swimmer.name,
-        laps: swimmer.laps,
-        house: swimmer.house
+        laps: swimmer.swim_laps,
+        house: swimmer.house,
+        points: swimmer.points
     }));
 
     data.forEach((e, i) => {
@@ -63,7 +64,7 @@ function process_data(raw, callback=update_leaderboard) {
     data.forEach(e => {
         currentHouse = e.house.toLowerCase();
         if (houseTotal[currentHouse] === undefined) houseTotal[currentHouse] = 0;
-        houseTotal[currentHouse] += e.laps;
+        houseTotal[currentHouse] += e.points;
     });
 
     Object.keys(houseTotal).forEach(house => house_tally(house, houseTotal[house]));
@@ -122,7 +123,7 @@ function tally(newTotal) {
 
 
 function house_tally(house, newTotal) {
-    change_number($(`.tally.num.house-${house}`), newTotal * LAP_LENGTH);
+    change_number($(`.tally.num.house-${house}`), newTotal);
 }
 
 function change_number(element, updated) {

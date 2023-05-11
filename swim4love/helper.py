@@ -105,7 +105,7 @@ def get_swimmer_score(swimmer):
 
 def get_swimmer_data(swimmer):
     """Fetch swimmer information"""
-    return {'id': swimmer.id, 'name': swimmer.name, 'swim_laps': swimmer.swim_laps, 'run_laps': swimmer.run_laps, 'challenges': swimmer.challenges, 'house': swimmer.house}
+    return {'id': swimmer.id, 'name': swimmer.name, 'swim_laps': swimmer.swim_laps, 'run_laps': swimmer.run_laps, 'challenges': swimmer.challenges, 'house': swimmer.house, 'points': swimmer.points}
 
 
 def get_swimmers_data():

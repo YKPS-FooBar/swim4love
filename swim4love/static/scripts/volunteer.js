@@ -190,7 +190,7 @@ function addVolunteer(username, password, isAdmin) {
 function updateSwimmer(id) {
     const data = swimmers[id];
     $(`#swimmer-${id} .list-item-name`).text(data.name);
-    $(`#swimmer-${id} .list-item-lap-count`).text(data.laps + ' 圈');
+    $(`#swimmer-${id} .list-item-details`).text(data.swim_laps + ' 圈(游泳) + ' + data.run_laps + ' 圈(跑步) + ' + data.challenges + ' 个挑战');
 }
 
 function updateSwimmers() {
@@ -201,7 +201,7 @@ function updateSwimmers() {
         var $swimmerNameItem = $('<div>').addClass('list-item-name-container').appendTo($swimmerItem);
         $('<p>').html('#' + id).addClass('list-item-id').appendTo($swimmerNameItem);
         $('<p>').addClass('list-item-name').appendTo($swimmerNameItem);
-        $('<p>').addClass('list-item-lap-count').appendTo($swimmerNameItem);
+        $('<p>').addClass('list-item-details').appendTo($swimmerNameItem);
 
         var $swimmerButtonsItem = $('<div>').addClass('list-item-buttons-container').appendTo($swimmerItem);
 
@@ -212,16 +212,48 @@ function updateSwimmers() {
         }
 
         $('<span>').addClass('list-item-button fas fa-plus').appendTo($swimmerButtonsItem).click(() => {
-            post('/swimmer/add-lap', {id: id}, data => {
-                console.log(`1 lap added to swimmer #${id}`);
+            post('/swimmer/add-lap', {id: id, type: "swim"}, data => {
+                console.log(`1 swim lap added to swimmer #${id}`);
                 swimmers[id] = data;
                 updateSwimmer(id);
             });
         });
 
         $('<span>').addClass('list-item-button fas fa-minus').appendTo($swimmerButtonsItem).click(() => {
-            post('/swimmer/sub-lap', {id: id}, data => {
+            post('/swimmer/sub-lap', {id: id, type: "swim"}, data => {
+                console.log(`1 swim lap subtracted from swimmer #${id}`);
+                swimmers[id] = data;
+                updateSwimmer(id);
+            });
+        });
+
+        $('<span>').addClass('list-item-button fas fa-plus').appendTo($swimmerButtonsItem).click(() => {
+            post('/swimmer/add-lap', {id: id, type: "run"}, data => {
+                console.log(`1 run lap added to swimmer #${id}`);
+                swimmers[id] = data;
+                updateSwimmer(id);
+            });
+        });
+
+        $('<span>').addClass('list-item-button fas fa-minus').appendTo($swimmerButtonsItem).click(() => {
+            post('/swimmer/sub-lap', {id: id, type: "run"}, data => {
                 console.log(`1 lap subtracted from swimmer #${id}`);
+                swimmers[id] = data;
+                updateSwimmer(id);
+            });
+        });
+
+        $('<span>').addClass('list-item-button fas fa-plus').appendTo($swimmerButtonsItem).click(() => {
+            post('/swimmer/add-lap', {id: id, type: "challenge"}, data => {
+                console.log(`1 challenge added to swimmer #${id}`);
+                swimmers[id] = data;
+                updateSwimmer(id);
+            });
+        });
+
+        $('<span>').addClass('list-item-button fas fa-minus').appendTo($swimmerButtonsItem).click(() => {
+            post('/swimmer/sub-lap', {id: id, type: "challenge"}, data => {
+                console.log(`1 challenge subtracted from swimmer #${id}`);
                 swimmers[id] = data;
                 updateSwimmer(id);
             });

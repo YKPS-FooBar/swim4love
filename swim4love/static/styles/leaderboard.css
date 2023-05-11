@@ -152,7 +152,7 @@ body {
 }
 
 .house-spring::after {
-    content: 'm (Spring)';
+    content: 'pts (Spring)';
     margin-right: 10px;
     font-size: 30px;
 }
@@ -162,7 +162,7 @@ body {
 }
 
 .house-summer::after {
-    content: 'm (Summer)';
+    content: 'pts (Summer)';
     margin-right: 10px;
     font-size: 30px;
 }
@@ -172,7 +172,7 @@ body {
 }
 
 .house-autumn::after {
-    content: 'm (Autumn)';
+    content: 'pts (Autumn)';
     margin-right: 10px;
     font-size: 30px;
 }
@@ -182,7 +182,7 @@ body {
 }
 
 .house-winter::after {
-    content: 'm (Winter)';
+    content: 'pts (Winter)';
     margin-right: 10px;
     font-size: 30px;
 }
