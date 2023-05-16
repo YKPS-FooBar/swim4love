@@ -20,7 +20,6 @@ ERRORS = {
     5: '游泳者#{}的圈数不能再减啦',
     6: '志愿者 {} 不存在',
     7: '志愿者 {} 已存在',
-    8: '游泳者ID#{}学院不存在',
 }
 
 
@@ -105,7 +104,7 @@ def get_swimmer_score(swimmer):
 
 def get_swimmer_data(swimmer):
     """Fetch swimmer information"""
-    return {'id': swimmer.id, 'name': swimmer.name, 'swim_laps': swimmer.swim_laps, 'run_laps': swimmer.run_laps, 'challenges': swimmer.challenges, 'house': swimmer.house, 'points': swimmer.points}
+    return {'id': swimmer.id, 'name': swimmer.name, 'swim_laps': swimmer.swim_laps, 'run_laps': swimmer.run_laps, 'challenges': swimmer.challenges, 'points': swimmer.points}
 
 
 def get_swimmers_data():

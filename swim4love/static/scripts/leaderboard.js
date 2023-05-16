@@ -39,49 +39,44 @@ $(document).ready(() => {
 
 
 function process_data(raw, callback=update_leaderboard) {
-    // `raw` is {id: {id: 123, name: 'Name', laps: 10, house: 'Spring'}, ...}
-    // `data` is [{id: '123', name: 'Name', laps: 10, house: 'Spring'}, ...]
+    // `raw` is {id: {id: 123, name: 'Name', ...}, ...}
+    // `data` is [{id: '123', name: 'Name', ...}, ...]
     let data = Object.values(raw).map(swimmer => Object({
         id: swimmer.id.toString(),
         name: swimmer.name,
-        laps: swimmer.swim_laps,
-        house: swimmer.house,
+        swim_laps: swimmer.swim_laps,
+        run_laps: swimmer.run_laps,
+        challenges: swimmer.challenges,
         points: swimmer.points
     }));
 
     data.forEach((e, i) => {
         let id = e.id
-        // If the `laps` is updated or `timestamp[id]` is yet to be created,
+        // If the `points` is updated or `timestamp[id]` is yet to be created,
         // set value for timestamp[id]
-        if (timestamp[id] === undefined || (previousData[id] !== undefined && e.laps !== previousData[id])) {
+        if (timestamp[id] === undefined || (previousData[id] !== undefined && e.points !== previousData[id])) {
             timestamp[id] = Date.now() + i;
         }
     });
-    // Sort `data` according to laps -> timestamp
-    data.sort((a, b) => a.laps > b.laps ? -1 : (a.laps < b.laps ? 1 : timestamp[a.id] < timestamp[b.id] ? -1 : 1));
+    // Sort `data` according to points -> timestamp
+    data.sort((a, b) => a.points > b.points ? -1 : (a.points < b.points ? 1 : timestamp[a.id] < timestamp[b.id] ? -1 : 1));
 
-    let houseTotal = {};
-    data.forEach(e => {
-        currentHouse = e.house.toLowerCase();
-        if (houseTotal[currentHouse] === undefined) houseTotal[currentHouse] = 0;
-        houseTotal[currentHouse] += e.points;
-    });
-
-    Object.keys(houseTotal).forEach(house => house_tally(house, houseTotal[house]));
-
-    let newTotal;
     if (data.length === 0) {
-        newTotal = 0;
+        tally(0,0,0,0);
     } else {
-        newTotal = data.map(e => e.laps).reduce((a, b) => a + b);
+        tally(
+            data.map(e => e.points).reduce((a, b) => a + b),
+            data.map(e => e.swim_laps).reduce((a, b) => a + b),
+            data.map(e => e.run_laps).reduce((a, b) => a + b),
+            data.map(e => e.challenges).reduce((a, b) => a + b)
+        );
     }
-    tally(newTotal);
 
     topTen = data.slice(0, 10);
     callback();
     leaderboard = topTen;
     data.forEach((e, i) => {
-        previousData[e.id] = e.laps;
+        previousData[e.id] = e.points;
     });
 }
 
@@ -98,7 +93,7 @@ function update_leaderboard() {
     topTen.forEach((e, i) => {
         let id = e.id;
         let name = e.name;
-        let laps = e.laps;
+        let points = e.points;
         if (!leaderboardIds.includes(id)) { // a new player
             insert_player(e, null, i, false);
             return;
@@ -107,23 +102,22 @@ function update_leaderboard() {
         // in case the name changes mid-event
         $(`#${id} .name`).text(name);
 
-        if (laps !== previousData[id]) {
-            change_number($(`#${id} .laps`), laps);
-            change_number($(`#${id} .meters`), laps * LAP_LENGTH);
+        if (points !== previousData[id]) {
+            change_number($(`#${id} .points`),      e.points);
+            change_number($(`#${id} .challenges`),  e.challenges);
+            change_number($(`#${id} .swim_meter`),  e.swim_laps * SWIM_LAP_LENGTH);
+            change_number($(`#${id} .run_meter`),   e.run_laps  * RUN_LAP_LENGTH );
         }
         change_rank(id, i);
     });
 }
 
 
-function tally(newTotal) {
-    change_number($('.tally.laps.num'), newTotal);
-    change_number($('.tally.meters.num'), newTotal * LAP_LENGTH);
-}
-
-
-function house_tally(house, newTotal) {
-    change_number($(`.tally.num.house-${house}`), newTotal);
+function tally(points, swim_laps, run_laps, challenges) {
+    change_number($('.tally.points.num'), points);
+    change_number($('.tally.meters.swim.num'), swim_laps * SWIM_LAP_LENGTH);
+    change_number($('.tally.meters.run.num'), run_laps * RUN_LAP_LENGTH);
+    change_number($('.tally.challenges.num'), challenges);
 }
 
 function change_number(element, updated) {
@@ -156,8 +150,8 @@ function initLeaderboard() {
     }
 }
 
-function get_rank(laps, compareArray=topTen) {
-    for (var i = 0; i < compareArray.length; i++) if (laps >= compareArray[i].laps) return i;
+function get_rank(points, compareArray=topTen) {
+    for (var i = 0; i < compareArray.length; i++) if (points >= compareArray[i].points) return i;
     return null;
 }
 
@@ -170,15 +164,23 @@ function remove_player(id) {
 function insert_player(player, compareArray=leaderboard, insertRank=null, init=true) {
     // Get info of player using UID
     let name = player.name;
-    let laps = player.laps;
     let id = player.id;
-    let house = player.house;
     // swimmers who haven't swum should also be on the list
-    // if (laps === 0) return;
-    let meters = laps * LAP_LENGTH;
-    let rank = (![null, undefined, NaN].includes(insertRank)) ? insertRank : get_rank(laps, compareArray);
+    // if (points === 0) return;
+    let swim_distance = player.swim_laps * SWIM_LAP_LENGTH;
+    let run_distance = player.run_laps * RUN_LAP_LENGTH;
+    let challenges = player.challenges;
+    let points = player.points;
+    let rank = (![null, undefined, NaN].includes(insertRank)) ? insertRank : get_rank(points, compareArray);
     let initPos = init ? (rank + 2) * LEADER_LINE_HEIGHT : 800; // for rise up animation
-    $('.leaderboard').append(`<div class='participant' id='${id}' data-rank='${rank}'><span class='name' style='top: ${initPos}px; opacity: 0;'>${name}</span><span class='house' style='top: ${initPos}px; opacity: 0;'>${house}</span><span class='laps' style='top: ${initPos}px; opacity: 0;'>${laps}</span><span class='meters' style='top: ${initPos}px; opacity: 0;'>${meters}</span></div>`);
+    $('.leaderboard').append(`
+        <div class='participant' id='${id}' data-rank='${rank}'>
+            <span class='name'       style='top: ${initPos}px; opacity: 0;'>${name}</span>
+            <span class='swim_meter' style='top: ${initPos}px; opacity: 0;'>${swim_distance}</span>
+            <span class='run_meter'  style='top: ${initPos}px; opacity: 0;'>${run_distance}</span>
+            <span class='challenges' style='top: ${initPos}px; opacity: 0;'>${challenges}</span>
+            <span class='points'     style='top: ${initPos}px; opacity: 0;'>${points}</span>
+        </div>`);
     // Align elements
     for (let i = 1; i <= LEADER_COLS_WIDTH.length; i++) {
         $(`#${id} :nth-child(${i})`).css('left', LEADER_COLS_WIDTH[i] * leaderWidth);
@@ -200,16 +202,3 @@ function change_rank(id, newRank) {
     $(`#${id} *`).css('top', (newRank + 1) * LEADER_LINE_HEIGHT);
     $(`#${id}`).attr('data-rank', newRank);
 }
-
-/* --- WORK IN PROGRESS? ---
-function change_rank_house(house, newRank) {
-    if (newRank >= topTen.length || newRank < 0) {
-        console.warn(`Cannot change player ${house} to rank ${newRank}`);
-        return;
-    };
-    if (parseInt($(`#${house}`).attr('data-rank')) === newRank) return;
-    // Move this player to new position
-    $(`#${id} *`).css('top', (newRank + 1) * LEADER_LINE_HEIGHT);
-    $(`#${id}`).attr('data-rank', newRank);
-}
-*/

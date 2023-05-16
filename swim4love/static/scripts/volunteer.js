@@ -138,8 +138,8 @@ function unlinkSwimmer(id) {
     });
 }
 
-function addSwimmer(id, name, house) {
-    return post('/swimmer/add', {id: id, name: name, house: house}, data => {
+function addSwimmer(id, name) {
+    return post('/swimmer/add', {id: id, name: name}, data => {
         console.log(`Added new swimmer #${id}`);
         swimmers[id] = data;
         updateSwimmers();
@@ -320,9 +320,8 @@ function submitLinkSwimmer() {
 function submitAddSwimmer(event) {
     const inputId = $('.input-digit').toArray().map(e => $(e).val()).join('');
     const name = $('#add-swimmer-name').val();
-    const house = $('#add-swimmer-house').val();
     if (isValidId(inputId)) {
-        addSwimmer(inputId, name, house);
+        addSwimmer(inputId, name);
     }
     event.preventDefault();
 }

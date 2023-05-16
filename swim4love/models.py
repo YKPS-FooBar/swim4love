@@ -15,7 +15,6 @@ class Swimmer(db.Model):
     run_laps = db.Column(db.Integer, nullable=False, default=0)
     challenges = db.Column(db.Integer, nullable=False, default=0)
     points = db.Column(db.Integer, nullable=False, default=0) #House rankings
-    house = db.Column(db.String(6), nullable=True)
 
     def __repr__(self):
         return '<Swimmer #{:03d} {!r}>'.format(self.id, self.name)

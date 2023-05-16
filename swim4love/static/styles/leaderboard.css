@@ -115,6 +115,18 @@ body {
     margin-left: 5px;
 }
 
+.participant .run_meter::after {
+    content: 'm';
+    margin-left: 5px;
+    font-size: 35px;
+}
+
+.participant .swim_meter::after {
+    content: 'm';
+    margin-left: 5px;
+    font-size: 35px;
+}
+
 /* Total Tally */
 
 .container-tally {
@@ -144,46 +156,6 @@ body {
 
 .tally.meters.num::after {
     content: 'm';
-    font-size: 30px;
-}
-
-.house-spring {
-    color: #00ff00;
-}
-
-.house-spring::after {
-    content: 'pts (Spring)';
-    margin-right: 10px;
-    font-size: 30px;
-}
-
-.house-summer {
-    color: #ffff00;
-}
-
-.house-summer::after {
-    content: 'pts (Summer)';
-    margin-right: 10px;
-    font-size: 30px;
-}
-
-.house-autumn {
-    color: #ff0000;
-}
-
-.house-autumn::after {
-    content: 'pts (Autumn)';
-    margin-right: 10px;
-    font-size: 30px;
-}
-
-.house-winter {
-    color: #0000ff;
-}
-
-.house-winter::after {
-    content: 'pts (Winter)';
-    margin-right: 10px;
     font-size: 30px;
 }
 
