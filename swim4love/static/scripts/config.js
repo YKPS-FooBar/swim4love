@@ -6,7 +6,7 @@ const RUN_LAP_SCORE     = 300;
 const CHALLENGE_SCORE   = 4000;
 
 const METER_UPDATE_SPAN = 400; // in milliseconds
-const LEADER_COLS_WIDTH = [0, 0.08, 0.45, 0.57, 0.69, 0.85];
+const LEADER_COLS_WIDTH = [0, 0.08, 0.40, 0.52, 0.64, 0.85];
 const LEADER_LINE_HEIGHT = 46 * 1.5;
 
 // For achievement
